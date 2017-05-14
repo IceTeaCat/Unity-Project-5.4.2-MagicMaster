@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 
-public class MainMenu : MonoBehaviour
+public class MainMenu : Photon.MonoBehaviour
 {
 
     //UI
@@ -11,8 +11,14 @@ public class MainMenu : MonoBehaviour
     public GameObject CreateRoomPanel;
     public GameObject JoinRoomPanel;
     public GameObject InTheRoomPanel;
+    public GameObject StorePanel;
+    public GameObject StoreSkillList;
+    public GameObject StoreGemList;
+
 
     public GameObject JoystickUI;
+    public Text LobbyPlayerName;
+
 
     public string playerPrefabName = "Player";
 
@@ -31,20 +37,37 @@ public class MainMenu : MonoBehaviour
 
      void Start()
     {
-        if (PhotonNetwork.player.NickName == "")
-            CreatePlayerPanel.SetActive(true);
-        else
-            GameLobbyPanel.SetActive(true);
 
     }
 
+
+
+
     void Update()
     {
+
+
         if (InTheRoomManager.Boss)
             InTheRoomPanel.transform.FindChild("Room_panel/StartGame_btn").gameObject.SetActive(true);
         else
             InTheRoomPanel.transform.FindChild("Room_panel/StartGame_btn").gameObject.SetActive(false);
     }
+
+    void OnJoinedLobby()
+    {
+        PhotonNetwork.player.NickName = PlayerPrefs.GetString("PlayerName");
+        print(PhotonNetwork.player.NickName);
+        if (PhotonNetwork.player.NickName == "")
+        {
+            CreatePlayerPanel.SetActive(true);
+        }
+        else
+        {
+            GameLobbyPanel.SetActive(true);
+            LobbyPlayerName.text = PhotonNetwork.playerName;
+        }
+    }
+
 
     void OnConnectedToMaster()
     {
@@ -67,13 +90,15 @@ public class MainMenu : MonoBehaviour
 
     public void CreatePlayerToGameLobby()
     {
+
         CreatePlayerPanel.SetActive(false);
         GameLobbyPanel.SetActive(true);
         PhotonNetwork.playerName = CreatePlayerPanel.transform.FindChild("PanelBG/EnterPlayerName/PlayerNameTextField").GetComponent<InputField>().text;
         print("歡迎你~" + PhotonNetwork.playerName);
-
+        LobbyPlayerName.text = PhotonNetwork.playerName;
         PlayerPrefs.SetString("PlayerName", PhotonNetwork.playerName);
-        PlayerPrefs.Save();
+        //PlayerPrefs.Save();
+
     }
 
     public void GameLobbyToCreateRoom()
@@ -111,9 +136,30 @@ public class MainMenu : MonoBehaviour
         GameLobbyPanel.SetActive(true);
     }
 
+    public void OpenStore()
+    {
+        StorePanel.SetActive(true);
+    }
+    public void CloseStore()
+    {
+        StorePanel.SetActive(false);
+    }
+
+    public void SwitchToSkill()
+    {
+        StoreSkillList.SetActive(true);
+        StoreGemList.SetActive(false);
+    }
+    public void SwitchToGem()
+    {
+        StoreGemList.SetActive(true);
+        StoreSkillList.SetActive(false);
+    }
+
 
     public void SelectSkillPanel()
     {
+        if (!InTheRoomManager.Ready)
             InTheRoomPanel.transform.Find("Room_panel/SkillPanel").gameObject.SetActive(true);
     }
 

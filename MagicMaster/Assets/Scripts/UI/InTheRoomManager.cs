@@ -28,8 +28,9 @@ public class InTheRoomManager : Photon.MonoBehaviour
     {
         while (PhotonNetwork.room != null || PhotonNetwork.connected == false)
             yield return 0;
-
+        
         Application.LoadLevel(Application.loadedLevel);
+
     }
 
     void InTheRoom()
@@ -57,13 +58,14 @@ public class InTheRoomManager : Photon.MonoBehaviour
 
     public void ChangeTeam(int team)
     {
-        Team = team;
+        if (!Ready)
+            Team = team;
     }
 
     public void ChangeSkill(int skillnumber)
     {
-        SkillNumber = skillnumber;
-
+        if (!Ready)
+            SkillNumber = skillnumber;
     }
 
     public void ReadyToStartGamel( )

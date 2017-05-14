@@ -1,7 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+//融合
 public class Fusion : MonoBehaviour {
+
+    
 
     public GameObject Fireball_big;
 

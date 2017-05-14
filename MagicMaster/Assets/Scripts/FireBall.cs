@@ -3,12 +3,12 @@ using System.Collections;
 
 public class FireBall : MonoBehaviour
 {
-    public int Team=-1;
+    public int Team = -1;
 
     public float BornTime = 0;
-     float Lifetime = 5.0f;
+    float Lifetime = 5.0f;
     public int FireLevel = 1;
-     float Speed = 10;
+    float Speed = 10;
 
 
     private Vector3 correctFireBallPos = Vector3.zero;
@@ -44,7 +44,7 @@ public class FireBall : MonoBehaviour
 
 
     }
-    
+
     void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.isWriting)
@@ -57,7 +57,7 @@ public class FireBall : MonoBehaviour
         {
             correctFireBallPos = (Vector3)stream.ReceiveNext();
             correctFireBallRot = (Quaternion)stream.ReceiveNext();
-            Team=(int)stream.ReceiveNext();
+            Team = (int)stream.ReceiveNext();
 
             if (!appliedInitialUpdate)
             {
@@ -68,7 +68,7 @@ public class FireBall : MonoBehaviour
         }
 
     }
-    
+
 
 
 

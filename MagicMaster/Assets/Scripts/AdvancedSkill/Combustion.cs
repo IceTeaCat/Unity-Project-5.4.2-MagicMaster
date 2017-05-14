@@ -1,15 +1,34 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Combustion : MonoBehaviour {
+//燃燒
+public class Combustion : MonoBehaviour
+{
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+    public GameObject CombustionEffect;
+    void Start()
+    {
+
+    }
+
+
+    void Update()
+    {
+
+    }
+
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "Fireball")
+        {
+
+
+
+
+        }
+
+    }
+
+
 }

@@ -44,18 +44,20 @@ public class PlayerBox : Photon.MonoBehaviour
     {
         if (photonView.isMine)
         {
-            if (tempTeam != InTheRoomManager.Team)
+            if (!InTheRoomManager.Ready)
             {
-                tempTeam = InTheRoomManager.Team;
-                GetComponent<PhotonView>().RPC("ChangeTeamRPC", PhotonTargets.AllBufferedViaServer, tempTeam);
-            }
+                if (tempTeam != InTheRoomManager.Team)
+                {
+                    tempTeam = InTheRoomManager.Team;
+                    GetComponent<PhotonView>().RPC("ChangeTeamRPC", PhotonTargets.AllBufferedViaServer, tempTeam);
+                }
 
-            if (tempSkillNumber != InTheRoomManager.SkillNumber)
-            {
-                tempSkillNumber = InTheRoomManager.SkillNumber;
-                GetComponent<PhotonView>().RPC("ChangeSkillRPC", PhotonTargets.AllBufferedViaServer, tempSkillNumber);
+                if (tempSkillNumber != InTheRoomManager.SkillNumber)
+                {
+                    tempSkillNumber = InTheRoomManager.SkillNumber;
+                    GetComponent<PhotonView>().RPC("ChangeSkillRPC", PhotonTargets.AllBufferedViaServer, tempSkillNumber);
+                }
             }
-
             if (tempReady != InTheRoomManager.Ready)
             {
                 tempReady = InTheRoomManager.Ready;
