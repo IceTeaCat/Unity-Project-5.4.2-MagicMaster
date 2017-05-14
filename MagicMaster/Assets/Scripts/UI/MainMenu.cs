@@ -20,6 +20,9 @@ public class MainMenu : MonoBehaviour
     {
         if (!PhotonNetwork.connected)
             PhotonNetwork.ConnectUsingSettings("v1.0");
+
+
+
     }
 
 
@@ -68,6 +71,9 @@ public class MainMenu : MonoBehaviour
         GameLobbyPanel.SetActive(true);
         PhotonNetwork.playerName = CreatePlayerPanel.transform.FindChild("PanelBG/EnterPlayerName/PlayerNameTextField").GetComponent<InputField>().text;
         print("歡迎你~" + PhotonNetwork.playerName);
+
+        PlayerPrefs.SetString("PlayerName", PhotonNetwork.playerName);
+        PlayerPrefs.Save();
     }
 
     public void GameLobbyToCreateRoom()
