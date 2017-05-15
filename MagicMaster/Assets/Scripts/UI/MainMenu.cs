@@ -66,11 +66,14 @@ public class MainMenu : Photon.MonoBehaviour
         if (PhotonNetwork.player.NickName == "")
         {
             CreatePlayerPanel.SetActive(true);
+            CreatePlayerPanel.GetComponent<Animator>().SetTrigger("ChangeIn");
         }
         else
         {
+            GameLobbyPanel.GetComponent<Animator>().SetTrigger("ChangeIn");
             GameLobbyPanel.SetActive(true);
             LobbyPlayerName.text = PhotonNetwork.playerName;
+
         }
     }
 
@@ -83,7 +86,9 @@ public class MainMenu : Photon.MonoBehaviour
     void OnJoinedRoom()
     {
         InTheRoomPanel.SetActive(true);
+        //InTheRoomPanel.GetComponent<Animator>().SetTrigger("ChangeIn");
         JoinRoomPanel.SetActive(false);
+
 
         
 
@@ -99,8 +104,12 @@ public class MainMenu : Photon.MonoBehaviour
         CreatePlayerPanel.GetComponent<Animator>().SetTrigger("Pressed");
         if (CreatePlayerName.text != "")
         {
-            //CreatePlayerPanel.SetActive(false);
-            //GameLobbyPanel.SetActive(true);
+            CreatePlayerPanel.GetComponent<Animator>().SetTrigger("ChangeOut");
+
+            GameLobbyPanel.SetActive(true);
+            GameLobbyPanel.GetComponent<Animator>().SetTrigger("ChangeIn");
+            CreatePlayerPanel.SetActive(false);
+
             PhotonNetwork.playerName = CreatePlayerPanel.transform.FindChild("PanelBG/EnterPlayerName/PlayerNameTextField").GetComponent<InputField>().text;
             print("歡迎你~" + PhotonNetwork.playerName);
             LobbyPlayerName.text = PhotonNetwork.playerName;
