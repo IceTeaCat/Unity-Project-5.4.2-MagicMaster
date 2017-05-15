@@ -9,7 +9,7 @@ public class FireBall : MonoBehaviour
     float Lifetime = 5.0f;
     public int FireLevel = 1;
     float Speed = 10;
-
+    public int Type = 1;
 
     private Vector3 correctFireBallPos = Vector3.zero;
     private Quaternion correctFireBallRot = Quaternion.identity;
@@ -42,7 +42,41 @@ public class FireBall : MonoBehaviour
             Instantiate(Explode_big, transform.position, Quaternion.identity);
         }
 
+        //打到玩家
+        if (other.gameObject.tag == "Player")
+        {
+            PlayerAbilityValue TargetPlayer_Data = other.transform.parent.GetComponent<PlayerAbilityValue>();
+            //PlayerAbilityValue TargetPlayer_Data = other.GetComponent<PlayerAbilityValue>();
+            //打到敵方
+            if (TargetPlayer_Data.TEAM!=Team)
+            {
+                Destroy(gameObject);
+                Instantiate(Explode_big, transform.position, Quaternion.identity);
+                TargetPlayer_Data.HEALTH -= 10;
 
+                switch (Type)
+                {
+                    case 0:
+
+                        break;
+
+                    case 1:
+                        GameObject CE = PhotonNetwork.Instantiate("CombustionEffect", other.transform.position, Quaternion.identity, 0) as GameObject;
+                        CE.GetComponent<CombustionDamage>().Target = other.gameObject.transform.parent.gameObject;
+                        break;
+
+                    case 2:
+                        break;
+
+                    case 3:
+                        break;
+                }
+
+
+
+
+            }
+        }
     }
 
     void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)

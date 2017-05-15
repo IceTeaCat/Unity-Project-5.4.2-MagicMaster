@@ -70,21 +70,30 @@ public class PlayerSkill : Photon.MonoBehaviour
                         //附加進階技能
                         switch (a)
                         {
+                            case 0:
+                                {
+                                    fireball.GetComponent<FireBall>().Type = 0;
+                                }
+                                break;
+
                             case 1:
                                 {
-                                    fireball.AddComponent<Combustion>();
+                                    fireball.GetComponent<FireBall>().Type = 1;
+                                    //fireball.AddComponent<Combustion>();
                                 }
                                 break;
 
                             case 2:
                                 {
-                                    fireball.AddComponent<Fusion>();
+                                    fireball.GetComponent<FireBall>().Type = 2;
+                                    //fireball.AddComponent<Fusion>();
                                 }
                                 break;
 
                             case 3:
                                 {
-                                    fireball.AddComponent<Spatter>();
+                                    fireball.GetComponent<FireBall>().Type = 3;
+                                    //fireball.AddComponent<Spatter>();
                                 }
                                 break;
                         }

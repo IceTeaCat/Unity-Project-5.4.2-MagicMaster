@@ -19,6 +19,6 @@ public class PlayerName : MonoBehaviour {
 
     private void Update()
     {
-        nameTag.text = transform.parent.GetComponent<PlayerAbilityValue>() .PLAYER_NAME+ " Team:" + (transform.parent.GetComponent<PlayerAbilityValue>().TEAM+1) + " Skill:"+ transform.parent.GetComponent<PlayerAbilityValue>().SKILL;
+        nameTag.text = transform.parent.GetComponent<PlayerAbilityValue>() .PLAYER_NAME+ " Team:" + (transform.parent.GetComponent<PlayerAbilityValue>().TEAM+1) + " Skill:"+ transform.parent.GetComponent<PlayerAbilityValue>().SKILL + " Hp:" + transform.parent.GetComponent<PlayerAbilityValue>().HEALTH;
     }
 }

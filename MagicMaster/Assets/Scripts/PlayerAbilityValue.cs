@@ -10,7 +10,7 @@ public class PlayerAbilityValue : Photon.MonoBehaviour
 
     public float MOVE_SPEED=5;
 
-    public float HEALTH=100;
+    public int HEALTH =100;
 
     void Start()
     {
@@ -20,7 +20,8 @@ public class PlayerAbilityValue : Photon.MonoBehaviour
 
     void Update()
     {
-
+        if (HEALTH <= 0)
+            Destroy(gameObject);
     }
 
     void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -29,12 +30,14 @@ public class PlayerAbilityValue : Photon.MonoBehaviour
         {
             stream.SendNext(TEAM);
             stream.SendNext(SKILL);
+            stream.SendNext(HEALTH);
         }
 
         else
         {
             TEAM = (int)stream.ReceiveNext();
             SKILL = (int)stream.ReceiveNext();
+            HEALTH = (int)stream.ReceiveNext();
         }
 
     }

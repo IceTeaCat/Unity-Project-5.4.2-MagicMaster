@@ -4,8 +4,6 @@ using System.Collections;
 //燃燒
 public class Combustion : MonoBehaviour
 {
-
-    public GameObject CombustionEffect;
     void Start()
     {
 
@@ -21,6 +19,14 @@ public class Combustion : MonoBehaviour
     void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Fireball")
+        {
+
+
+
+
+        }
+
+        if (other.tag == "Player")
         {
 
 
