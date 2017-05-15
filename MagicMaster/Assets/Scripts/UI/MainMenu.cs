@@ -15,12 +15,18 @@ public class MainMenu : Photon.MonoBehaviour
     public GameObject StoreSkillList;
     public GameObject StoreGemList;
 
+    public Text CreatePlayerName;
+
 
     public GameObject JoystickUI;
     public Text LobbyPlayerName;
 
 
     public string playerPrefabName = "Player";
+
+
+    //動作
+    Animation anim;
 
     void Awake()
     {
@@ -55,7 +61,7 @@ public class MainMenu : Photon.MonoBehaviour
 
     void OnJoinedLobby()
     {
-        PhotonNetwork.player.NickName = PlayerPrefs.GetString("PlayerName");
+        //PhotonNetwork.player.NickName = PlayerPrefs.GetString("PlayerName");
         print(PhotonNetwork.player.NickName);
         if (PhotonNetwork.player.NickName == "")
         {
@@ -90,15 +96,17 @@ public class MainMenu : Photon.MonoBehaviour
 
     public void CreatePlayerToGameLobby()
     {
-
-        CreatePlayerPanel.SetActive(false);
-        GameLobbyPanel.SetActive(true);
-        PhotonNetwork.playerName = CreatePlayerPanel.transform.FindChild("PanelBG/EnterPlayerName/PlayerNameTextField").GetComponent<InputField>().text;
-        print("歡迎你~" + PhotonNetwork.playerName);
-        LobbyPlayerName.text = PhotonNetwork.playerName;
-        PlayerPrefs.SetString("PlayerName", PhotonNetwork.playerName);
-        //PlayerPrefs.Save();
-
+        CreatePlayerPanel.GetComponent<Animator>().SetTrigger("Pressed");
+        if (CreatePlayerName.text != "")
+        {
+            //CreatePlayerPanel.SetActive(false);
+            //GameLobbyPanel.SetActive(true);
+            PhotonNetwork.playerName = CreatePlayerPanel.transform.FindChild("PanelBG/EnterPlayerName/PlayerNameTextField").GetComponent<InputField>().text;
+            print("歡迎你~" + PhotonNetwork.playerName);
+            LobbyPlayerName.text = PhotonNetwork.playerName;
+            PlayerPrefs.SetString("PlayerName", PhotonNetwork.playerName);
+            //PlayerPrefs.Save();
+        }
     }
 
     public void GameLobbyToCreateRoom()
