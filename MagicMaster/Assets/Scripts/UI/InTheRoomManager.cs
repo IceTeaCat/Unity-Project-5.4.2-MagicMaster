@@ -70,7 +70,7 @@ public class InTheRoomManager : Photon.MonoBehaviour
 
     public void ReadyToStartGamel( )
     {
-        if (!Ready)
+        if (!Ready && SkillNumber!=0)
         {
             Ready = true;
         }

@@ -104,7 +104,7 @@ public class MainMenu : Photon.MonoBehaviour
         CreatePlayerPanel.GetComponent<Animator>().SetTrigger("Pressed");
         if (CreatePlayerName.text != "")
         {
-            CreatePlayerPanel.GetComponent<Animator>().SetTrigger("ChangeOut");
+            //CreatePlayerPanel.GetComponent<Animator>().SetTrigger("ChangeOut");
 
             GameLobbyPanel.SetActive(true);
             GameLobbyPanel.GetComponent<Animator>().SetTrigger("ChangeIn");
@@ -122,6 +122,7 @@ public class MainMenu : Photon.MonoBehaviour
     {
         GameLobbyPanel.SetActive(false);
         CreateRoomPanel.SetActive(true);
+        //CreateRoomPanel.GetComponent<Animator>().SetTrigger("ChangeIn");
     }
 
     public void CreateRoomReturnToGameLobby()
