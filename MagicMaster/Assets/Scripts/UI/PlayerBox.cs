@@ -10,6 +10,7 @@ public class PlayerBox : Photon.MonoBehaviour
     public string PlayerName;
     public int tempTeam = 0;
     public int tempSkillNumber = 0;
+    public int tempSkillAdvNumber = 0;
     public bool tempReady = false;
     public int tempReadtPlayerCount = 0;
 
@@ -57,6 +58,14 @@ public class PlayerBox : Photon.MonoBehaviour
                     tempSkillNumber = InTheRoomManager.SkillNumber;
                     GetComponent<PhotonView>().RPC("ChangeSkillRPC", PhotonTargets.AllBufferedViaServer, tempSkillNumber);
                 }
+
+                if (tempSkillAdvNumber != InTheRoomManager.Skill_AdvanceNumber)
+                {
+                    tempSkillAdvNumber = InTheRoomManager.Skill_AdvanceNumber;
+                    //GetComponent<PhotonView>().RPC("ChangeSkillAdvRPC", PhotonTargets.AllBufferedViaServer, tempSkillAdvNumber);
+                }
+
+
             }
             if (tempReady != InTheRoomManager.Ready)
             {
@@ -119,6 +128,12 @@ public class PlayerBox : Photon.MonoBehaviour
     void ChangeSkillRPC(int skillnumber)
     {
         transform.FindChild("Skill_Icon").GetComponent<Image>().sprite = code.GetComponent<SkillList>().All_Skill_Sprite[skillnumber];
+    }
+
+    [PunRPC]
+    void ChangeSkillAdvRPC(int skilladvnumber)
+    {
+        transform.FindChild("Skill_Icon").GetComponent<Image>().sprite = code.GetComponent<SkillList>().All_Skill_Sprite[0];
     }
 
     //是否準備完成

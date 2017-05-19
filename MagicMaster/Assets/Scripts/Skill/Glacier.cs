@@ -1,13 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-//濺散
-public class Spatter : MonoBehaviour {
+//刺骨
+public class Glacier : MonoBehaviour {
 
-	
 	void Start () {
-	
-	}
+
+    }
 	
 	
 	void Update () {

@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-//燃燒
-public class Combustion : MonoBehaviour
+//濺散
+public class Spatter : MonoBehaviour
 {
+    
+
     void Start()
     {
 
@@ -15,26 +17,17 @@ public class Combustion : MonoBehaviour
 
     }
 
-
     void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Fireball")
         {
-
-
-
-
-        }
-
-        if (other.tag == "Player")
-        {
-
-
-
+            Destroy(gameObject);
+            Destroy(other.gameObject);
+            PhotonNetwork.Instantiate("Explode_big", transform.position, Quaternion.identity,0);
 
         }
-
     }
+
 
 
 }

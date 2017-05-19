@@ -193,7 +193,7 @@ public class MainMenu : Photon.MonoBehaviour
         if (InTheRoomManager.ReadyPlayerCount == PhotonNetwork.room.PlayerCount)
         {
             GetComponent<PhotonView>().RPC("STARTGAME", PhotonTargets.AllBufferedViaServer);
-            JoystickUI.SetActive(true);
+
         }
         else
             print("只有" + InTheRoomManager.ReadyPlayerCount + "個玩家準備完成");
@@ -205,11 +205,12 @@ public class MainMenu : Photon.MonoBehaviour
     void STARTGAME()
     {
         InTheRoomPanel.SetActive(false);
+        JoystickUI.SetActive(true);
         GameObject MyCharacter = PhotonNetwork.Instantiate(this.playerPrefabName, transform.position, Quaternion.identity, 0);
         MyCharacter.GetComponent<PlayerAbilityValue>().PLAYER_NAME = PhotonNetwork.player.NickName;
         MyCharacter.GetComponent<PlayerAbilityValue>().TEAM = InTheRoomManager.Team;
         MyCharacter.GetComponent<PlayerAbilityValue>().SKILL = InTheRoomManager.SkillNumber;
-        //print()
+        MyCharacter.GetComponent<PlayerAbilityValue>().ADVANCED_SKILL = InTheRoomManager.Skill_AdvanceNumber;
     }
 
 }

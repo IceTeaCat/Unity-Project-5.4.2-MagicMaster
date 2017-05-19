@@ -9,6 +9,7 @@ public class InTheRoomManager : Photon.MonoBehaviour
 
     public static int Team;
     public static int SkillNumber;
+    public static int Skill_AdvanceNumber;
     public static bool Ready=false;
     public static bool Boss = false;
 
@@ -67,6 +68,15 @@ public class InTheRoomManager : Photon.MonoBehaviour
         if (!Ready)
             SkillNumber = skillnumber;
     }
+
+    public void ChangeSkilladv(int skill_advnumber)
+    {
+        if (!Ready)
+        {
+            Skill_AdvanceNumber = skill_advnumber;
+        }
+    }
+    
 
     public void ReadyToStartGamel( )
     {
