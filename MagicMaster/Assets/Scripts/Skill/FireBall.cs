@@ -36,7 +36,7 @@ public class FireBall : MonoBehaviour
         if (other.gameObject.tag == "Wall")
         {
             Destroy(gameObject);
-            PhotonNetwork.Instantiate("Explode_big", transform.position, Quaternion.identity, 0);
+            PhotonNetwork.Instantiate("FireBall_Explode", transform.position, Quaternion.identity, 0);
         }
 
         //打到玩家
@@ -47,7 +47,7 @@ public class FireBall : MonoBehaviour
             if (TargetPlayer_Data.TEAM!=Team)
             {
                 Destroy(gameObject);
-                PhotonNetwork.Instantiate("Explode_big", transform.position, Quaternion.identity, 0);
+                PhotonNetwork.Instantiate("FireBall_Explode", transform.position, Quaternion.identity, 0);
                 TargetPlayer_Data.HEALTH -= Power;
             }
         }

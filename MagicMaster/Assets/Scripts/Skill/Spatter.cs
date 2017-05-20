@@ -4,7 +4,7 @@ using System.Collections;
 //濺散
 public class Spatter : MonoBehaviour
 {
-    
+
 
     void Start()
     {
@@ -23,8 +23,8 @@ public class Spatter : MonoBehaviour
         {
             Destroy(gameObject);
             Destroy(other.gameObject);
-            PhotonNetwork.Instantiate("Explode_big", transform.position, Quaternion.identity,0);
-
+            GameObject SE = PhotonNetwork.Instantiate("SpatterEffect", transform.position, Quaternion.identity,0);
+            SE.GetComponent<SpatterDamage>().Team = GetComponent<FireBall>().Team;
         }
     }
 

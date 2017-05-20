@@ -51,12 +51,12 @@ public class Fusion : MonoBehaviour
         if (OtherFireBall.GetComponent<FireBall>().FireLevel == 1 && MyFireBall.GetComponent<FireBall>().FireLevel == 1)
         {
             print("合成中火球");
-            FB = PhotonNetwork.Instantiate("Fireball_mid", transform.position, transform.rotation, 0);
+            FB = PhotonNetwork.Instantiate("FireBall_mid", transform.position, transform.rotation, 0);
         }
         else
         {
             print("合成大火球");
-            FB = PhotonNetwork.Instantiate("Fireball_big", transform.position, transform.rotation, 0);
+            FB = PhotonNetwork.Instantiate("FireBall_big", transform.position, transform.rotation, 0);
         }
 
         if (Mathf.Abs(a - b) >= 180)
