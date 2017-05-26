@@ -13,8 +13,15 @@ public class ElectricMultiple : MonoBehaviour
                 GameObject Player = GetComponent<ElectricLockRange>().PlayerOrEnemy;
                 GameObject ElectricLR = PhotonNetwork.Instantiate("ElectricLR", TargetEnemy.transform.position, Quaternion.identity, 0) as GameObject;
                 ElectricLR.GetComponent<Electric>().LR = ElectricLR.GetComponent<LineRenderer>();
-                ElectricLR.GetComponent<Electric>().LR.SetPosition(0, Player.transform.position);
-                ElectricLR.GetComponent<Electric>().LR.SetPosition(1, TargetEnemy.transform.position);
+
+                ElectricLR.GetComponent<Electric>().origin = Player;
+                ElectricLR.GetComponent<Electric>().destination = TargetEnemy;
+
+                if (Player.GetComponent<ElectricIncrease>())
+                {
+                    ElectricLR.GetComponent<Electric>().isPowerUp = true;
+                }
+
                 ElectricLR.GetComponent<Electric>().Target = TargetEnemy;
             }
             Destroy(gameObject);

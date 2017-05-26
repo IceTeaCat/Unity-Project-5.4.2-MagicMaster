@@ -6,6 +6,8 @@ public class ElectricLockRange : MonoBehaviour
 {
     float DamageTime = 0.01f;
 
+    public GameObject Player;
+
     public GameObject PlayerOrEnemy;
     PlayerAbilityValue TargetPlayer_Data;
 
@@ -28,16 +30,29 @@ public class ElectricLockRange : MonoBehaviour
     {
         DamageTime -= Time.deltaTime;
         CaleDistance();
-        if (DamageTime <= 0 && Enemys.Count != 0 && !GetComponent<ElectricMultiple>() && !GetComponent<ElectricChain>())
+        if (DamageTime <= 0 )
         {
+            if (Enemys.Count != 0 && !GetComponent<ElectricMultiple>() && !GetComponent<ElectricChain>())
+            {
+                GameObject ElectricLR = PhotonNetwork.Instantiate("ElectricLR", TargetEnemy.transform.position, Quaternion.identity, 0) as GameObject;
+                ElectricLR.GetComponent<Electric>().LR = ElectricLR.GetComponent<LineRenderer>();
+                ElectricLR.GetComponent<Electric>().origin = PlayerOrEnemy;
+                ElectricLR.GetComponent<Electric>().destination = TargetEnemy;
 
-            GameObject ElectricLR = PhotonNetwork.Instantiate("ElectricLR", TargetEnemy.transform.position, Quaternion.identity, 0) as GameObject;
-            ElectricLR.GetComponent<Electric>().LR = ElectricLR.GetComponent<LineRenderer>();
-            ElectricLR.GetComponent<Electric>().LR.SetPosition(0, PlayerOrEnemy.transform.position);
-            ElectricLR.GetComponent<Electric>().LR.SetPosition(1, TargetEnemy.transform.position);
-            ElectricLR.GetComponent<Electric>().Target = TargetEnemy;
-            Destroy(gameObject);
+                ElectricLR.GetComponent<Electric>().Target = TargetEnemy;
+
+                if(Player.GetComponent<ElectricIncrease>())
+                {
+                    ElectricLR.GetComponent<Electric>().isPowerUp = true;
+                }
+                print(Player.name);
+                Destroy(gameObject);
+            }
+
         }
+
+
+
 
     }
 
@@ -64,6 +79,8 @@ public class ElectricLockRange : MonoBehaviour
             MinD = D.IndexOf(Mathf.Min(D.ToArray()));
             TargetEnemy = Enemys[MinD];
         }
+        else
+            Destroy(gameObject);
     }
 
 }

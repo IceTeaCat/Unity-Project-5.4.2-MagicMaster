@@ -30,6 +30,15 @@ public class PlayerSkill : Photon.MonoBehaviour
             GR.transform.parent = gameObject.transform;
         }
 
+        if (_pav.SKILL == 3 && _pav.ADVANCED_SKILL == 3)
+        {
+            GameObject EIR = PhotonNetwork.Instantiate("ElectricIncreaseRange", transform.position, Quaternion.identity, 0);
+            EIR.transform.parent = gameObject.transform;
+            EIR.GetComponent<ElectricIncreaseRange>().Team = _pav.TEAM;
+
+        }
+
+
     }
 
 
@@ -235,8 +244,9 @@ public class PlayerSkill : Photon.MonoBehaviour
                     {
                         GameObject SR = Instantiate(ElectricLockRange, Skill_Img_DamageCircle.transform.position, Quaternion.identity) as GameObject;
                         SR.GetComponent<ElectricLockRange>().PlayerOrEnemy = _pav.gameObject;
+                        SR.GetComponent<ElectricLockRange>().Player = _pav.gameObject;
                         SR.GetComponent<ElectricLockRange>().Team = _pav.TEAM;
-
+                        SR.transform.localScale = Skill_Img_DamageCircle.transform.localScale;
                         //附加進階技能
                         switch (a)
                         {
@@ -258,27 +268,24 @@ public class PlayerSkill : Photon.MonoBehaviour
                                     //連鎖
                                     SR.AddComponent<ElectricChain>();
                                     SR.GetComponent<ElectricChain>().Team = _pav.TEAM;
+                                    SR.GetComponent<ElectricChain>().Player = _pav.gameObject;
                                 }
                                 break;
 
                             case 3:
                                 {
                                     //增幅
-                                    //elc.AddComponent<Glacier>();
+                                    //SR.AddComponent<Glacier>();
                                 }
                                 break;
                         }
 
-
-
                         Skill_Img_DamageCircle.transform.localPosition = new Vector3(0, -0.4f, 0);
                         Skill_Img_DamageCircle.SetActive(false);
-
+                        Skill_Img_RangeCircle.transform.gameObject.SetActive(false);
                         SkillFire = false;
                         SkillStandBy = false;
                     }
-
-
                 }
                 break;
 
