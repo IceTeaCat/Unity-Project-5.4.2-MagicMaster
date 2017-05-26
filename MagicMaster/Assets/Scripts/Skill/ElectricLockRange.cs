@@ -2,11 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class ElectricLockRange : MonoBehaviour {
-    
-    float DamageTime=.1f;
+public class ElectricLockRange : MonoBehaviour
+{
+    float DamageTime = 0.01f;
 
-    public GameObject Player;
+    public GameObject PlayerOrEnemy;
     PlayerAbilityValue TargetPlayer_Data;
 
     public int Team = -1;
@@ -18,38 +18,25 @@ public class ElectricLockRange : MonoBehaviour {
 
     int NowChainCount = 0;
 
-    void Start() {
+    void Start()
+    {
         TargetEnemy = null;
     }
 
 
-    void Update() {
+    void Update()
+    {
         DamageTime -= Time.deltaTime;
-
-        if (DamageTime <= 0 && Enemys.Count != 0 && !GetComponent<ElectricMultiple>())
+        CaleDistance();
+        if (DamageTime <= 0 && Enemys.Count != 0 && !GetComponent<ElectricMultiple>() && !GetComponent<ElectricChain>())
         {
-            CaleDistance();
-            GameObject ELR = PhotonNetwork.Instantiate("ElectricLR", TargetEnemy.transform.position, Quaternion.identity, 0) as GameObject;
-            ELR.GetComponent<Electric>().LR = ELR.GetComponent<LineRenderer>();
-            ELR.GetComponent<Electric>().LR.SetPosition(0, Player.transform.position);
-            ELR.GetComponent<Electric>().LR.SetPosition(1, TargetEnemy.transform.position);
-            ELR.GetComponent<Electric>().Target = TargetEnemy;
 
-
-
-            if (GetComponent<ElectricChain>() && GetComponent<ElectricChain>().ECLR !=null)
-            {
-                GetComponent<ElectricChain>().ECLR.GetComponent<ElectricChainLockRange>().OldEnemy = TargetEnemy;
-                Destroy(gameObject);
-                print("123");
-            }
-            else if(!GetComponent<ElectricChain>())
-            {
-                Destroy(gameObject);
-                print("456");
-            }
-            
-
+            GameObject ElectricLR = PhotonNetwork.Instantiate("ElectricLR", TargetEnemy.transform.position, Quaternion.identity, 0) as GameObject;
+            ElectricLR.GetComponent<Electric>().LR = ElectricLR.GetComponent<LineRenderer>();
+            ElectricLR.GetComponent<Electric>().LR.SetPosition(0, PlayerOrEnemy.transform.position);
+            ElectricLR.GetComponent<Electric>().LR.SetPosition(1, TargetEnemy.transform.position);
+            ElectricLR.GetComponent<Electric>().Target = TargetEnemy;
+            Destroy(gameObject);
         }
 
     }
@@ -65,14 +52,12 @@ public class ElectricLockRange : MonoBehaviour {
             if (TargetPlayer_Data.TEAM != Team)
             {
                 Enemys.Add(TargetPlayer_Data.gameObject);
-                D.Add(Vector3.Distance(TargetPlayer_Data.gameObject.transform.position, Player.transform.position));
+                D.Add(Vector3.Distance(TargetPlayer_Data.gameObject.transform.position, PlayerOrEnemy.transform.position));
             }
         }
-
-
     }
 
-     void CaleDistance()
+    void CaleDistance()
     {
         if (D.Count != 0)
         {
@@ -80,8 +65,5 @@ public class ElectricLockRange : MonoBehaviour {
             TargetEnemy = Enemys[MinD];
         }
     }
-
-
-
 
 }

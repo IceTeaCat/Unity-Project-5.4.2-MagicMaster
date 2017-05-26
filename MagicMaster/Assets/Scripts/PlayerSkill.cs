@@ -234,8 +234,9 @@ public class PlayerSkill : Photon.MonoBehaviour
                     if (SkillFire)
                     {
                         GameObject SR = Instantiate(ElectricLockRange, Skill_Img_DamageCircle.transform.position, Quaternion.identity) as GameObject;
-                        SR.GetComponent<ElectricLockRange>().Player = _pav.gameObject;
+                        SR.GetComponent<ElectricLockRange>().PlayerOrEnemy = _pav.gameObject;
                         SR.GetComponent<ElectricLockRange>().Team = _pav.TEAM;
+
                         //附加進階技能
                         switch (a)
                         {
@@ -256,6 +257,7 @@ public class PlayerSkill : Photon.MonoBehaviour
                                 {
                                     //連鎖
                                     SR.AddComponent<ElectricChain>();
+                                    SR.GetComponent<ElectricChain>().Team = _pav.TEAM;
                                 }
                                 break;
 

@@ -18,7 +18,7 @@ public class Electric : MonoBehaviour {
 
     Vector3 pointAlongLine;
 
-    public float DieTime=2;
+     float DieTime=.1f;
 
     void Start () {
         LR = GetComponent<LineRenderer>();

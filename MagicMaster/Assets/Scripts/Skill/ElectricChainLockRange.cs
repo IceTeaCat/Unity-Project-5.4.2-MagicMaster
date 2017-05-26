@@ -6,7 +6,11 @@ public class ElectricChainLockRange : MonoBehaviour
 {
     public GameObject ELR;
 
-    float DamageTime = .1f;
+    float JumpTime = 0.1f;
+
+    int JumpCount = 10;
+
+    float DamageTime = 0.01f;
 
     public int Team = -1;
     public List<GameObject> Enemys = new List<GameObject>();
@@ -18,12 +22,6 @@ public class ElectricChainLockRange : MonoBehaviour
     public GameObject TargetEnemy;
     public GameObject OldEnemy;
 
-    void Start()
-    {
-
-    }
-
-
     void Update()
     {
         DamageTime -= Time.deltaTime;
@@ -31,23 +29,40 @@ public class ElectricChainLockRange : MonoBehaviour
         if (DamageTime <= 0 && OldEnemy != null)
         {
 
-                RemoveOldTarget();
-                CaleDistance();
 
-                GameObject ElectricLR = PhotonNetwork.Instantiate("ElectricLR", TargetEnemy.transform.position, Quaternion.identity, 0) as GameObject;
-                ElectricLR.GetComponent<Electric>().LR = ElectricLR.GetComponent<LineRenderer>();
-                ElectricLR.GetComponent<Electric>().LR.SetPosition(0, OldEnemy.transform.position);
-                ElectricLR.GetComponent<Electric>().LR.SetPosition(1, TargetEnemy.transform.position);
-                ElectricLR.GetComponent<Electric>().Target = TargetEnemy;
-            /*
-                ELR.transform.position = TargetEnemy.transform.position;
-                Destroy(ELR.GetComponent<ElectricLockRange>());
-                ELR.AddComponent<ElectricLockRange>();
-                ELR.GetComponent<ElectricChain>().count -= 1;
-                */
-                Destroy(gameObject);
-            
-            
+            JumpTime -= Time.deltaTime;
+
+            //時間到就電過去
+            if (JumpTime <= 0)
+            {
+                if (JumpCount > 0)
+                {
+                    RemoveOldTarget();
+                    CaleDistance();
+                    print(OldEnemy.name +":" + TargetEnemy.name);
+                    GameObject ElectricLR = PhotonNetwork.Instantiate("ElectricLR", TargetEnemy.transform.position, Quaternion.identity, 0) as GameObject;
+                    ElectricLR.GetComponent<Electric>().LR = ElectricLR.GetComponent<LineRenderer>();
+                    ElectricLR.GetComponent<Electric>().LR.SetPosition(0, OldEnemy.transform.position);
+                    ElectricLR.GetComponent<Electric>().LR.SetPosition(1, TargetEnemy.transform.position);
+                    ElectricLR.GetComponent<Electric>().Target = TargetEnemy;
+
+                    GetComponent<SphereCollider>().enabled = false;
+
+                    JumpCount--;
+                    JumpTime = 0.1f;
+                    //清空資料
+                    Enemys.Clear();
+                    D.Clear();
+                    //移動位置
+                    gameObject.transform.position = TargetEnemy.transform.position;
+                    GetComponent<SphereCollider>().enabled = true;
+                    OldEnemy = TargetEnemy;
+                }
+                
+                else
+                    Destroy(gameObject);
+                
+            }
 
         }
     }
@@ -63,10 +78,14 @@ public class ElectricChainLockRange : MonoBehaviour
             {
                 Enemys.Add(TargetPlayer_Data.gameObject);
                 D.Add(Vector3.Distance(TargetPlayer_Data.gameObject.transform.position, transform.position));
+                /*
+                for (int i = 0; i < Enemys.Count; i++)
+                {
+                    print(Enemys[i].name);
+                }
+                */
             }
         }
-
-
     }
 
     void RemoveOldTarget()
@@ -88,7 +107,6 @@ public class ElectricChainLockRange : MonoBehaviour
         if (D.Count != 0)
         {
             MinD = D.IndexOf(Mathf.Min(D.ToArray()));
-            print(MinD);
             TargetEnemy = Enemys[MinD];
         }
     }
