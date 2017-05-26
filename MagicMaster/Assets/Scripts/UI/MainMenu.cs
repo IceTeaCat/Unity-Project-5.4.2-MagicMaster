@@ -206,11 +206,15 @@ public class MainMenu : Photon.MonoBehaviour
     {
         InTheRoomPanel.SetActive(false);
         JoystickUI.SetActive(true);
+        
         GameObject MyCharacter = PhotonNetwork.Instantiate(this.playerPrefabName, transform.position, Quaternion.identity, 0);
         MyCharacter.GetComponent<PlayerAbilityValue>().PLAYER_NAME = PhotonNetwork.player.NickName;
         MyCharacter.GetComponent<PlayerAbilityValue>().TEAM = InTheRoomManager.Team;
         MyCharacter.GetComponent<PlayerAbilityValue>().SKILL = InTheRoomManager.SkillNumber;
         MyCharacter.GetComponent<PlayerAbilityValue>().ADVANCED_SKILL = InTheRoomManager.Skill_AdvanceNumber;
+
+        JoystickUI.transform.GetChild(0).GetComponent<CnControls.SimpleJoystick>().Player = MyCharacter;
+        JoystickUI.transform.GetChild(1).GetComponent<CnControls.SimpleJoystick>().Player = MyCharacter;
     }
 
 }

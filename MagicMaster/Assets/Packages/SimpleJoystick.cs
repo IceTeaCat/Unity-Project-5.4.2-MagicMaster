@@ -31,6 +31,7 @@ namespace CnControls
         /// </summary>
         public float MovementRange = 50f;
 
+        public GameObject Player;
         /// <summary>
         /// The name of the horizontal axis for this joystick to update
         /// </summary>
@@ -224,8 +225,8 @@ namespace CnControls
             }
 
 			if (Stick.tag == "R_Stick") {
-				print ("Free");
-				PlayerSkill.SkillFire = true;
+				print ("放開");
+                Player.GetComponent<PlayerSkill>().SkillFire = true;
 			}
         }
 
@@ -258,8 +259,8 @@ namespace CnControls
             }
 
 			if (Stick.tag == "R_Stick") {
-				print ("Down");
-                PlayerSkill.SkillStandBy = true;
+				print ("按下");
+                Player.GetComponent<PlayerSkill>().SkillStandBy = true;
 			}
 
         }

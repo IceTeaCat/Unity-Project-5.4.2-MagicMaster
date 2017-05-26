@@ -36,7 +36,6 @@ public class PlayerBox : Photon.MonoBehaviour
         {
             GetComponent<PhotonView>().RPC("InitPlayerData", PhotonTargets.AllBufferedViaServer, PhotonNetwork.player.NickName);
         }
-
     }
 
 
@@ -52,7 +51,6 @@ public class PlayerBox : Photon.MonoBehaviour
                     tempTeam = InTheRoomManager.Team;
                     GetComponent<PhotonView>().RPC("ChangeTeamRPC", PhotonTargets.AllBufferedViaServer, tempTeam);
                 }
-
                 if (tempSkillNumber != InTheRoomManager.SkillNumber)
                 {
                     tempSkillNumber = InTheRoomManager.SkillNumber;
@@ -64,16 +62,12 @@ public class PlayerBox : Photon.MonoBehaviour
                     tempSkillAdvNumber = InTheRoomManager.Skill_AdvanceNumber;
                     //GetComponent<PhotonView>().RPC("ChangeSkillAdvRPC", PhotonTargets.AllBufferedViaServer, tempSkillAdvNumber);
                 }
-
-
             }
             if (tempReady != InTheRoomManager.Ready)
             {
                 tempReady = InTheRoomManager.Ready;
-
                 GetComponent<PhotonView>().RPC("ReadyToStartGameRPC", PhotonTargets.AllBufferedViaServer, tempReady);
-            }
-            
+            }         
         }
     }
 
@@ -100,7 +94,6 @@ public class PlayerBox : Photon.MonoBehaviour
         transform.localScale = new Vector3(1, 1, 1);
         PlayerName = name;
         transform.FindChild("NameText").GetComponent<Text>().text = PlayerName;
-
     }
 
 
@@ -108,7 +101,6 @@ public class PlayerBox : Photon.MonoBehaviour
     [PunRPC]
     void ChangeTeamRPC(int team)
     {
-
         if (team == 0)
         {
             transform.SetParent(GameObject.Find("Red_PlayerSlot").transform);
