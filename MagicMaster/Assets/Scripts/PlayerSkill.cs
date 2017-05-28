@@ -9,8 +9,9 @@ public class PlayerSkill : Photon.MonoBehaviour
 
     PlayerAbilityValue _pav;
 
-    public bool CanFire=true;
+    public bool CanFire = true;
 
+    public GameObject playerSkill;
     public GameObject Skill_Img_Arrow;
     public GameObject Skill_Img_RangeCircle;
     public GameObject Skill_Img_DamageCircle;
@@ -72,14 +73,20 @@ public class PlayerSkill : Photon.MonoBehaviour
                         R_movementVector = Camera.main.transform.TransformDirection(R_inputVector);
                         R_movementVector.y = 0f;
                         R_movementVector.Normalize();
-                        Skill_Img_Arrow.transform.forward = R_movementVector;
+                        playerSkill.transform.forward = R_movementVector;
                     }
                 }
                 break;
             //冰凍發動技能圖示
             case 2:
                 {
-
+                    if (R_inputVector.sqrMagnitude > 0.001f)
+                    {
+                        R_movementVector = Camera.main.transform.TransformDirection(R_inputVector);
+                        R_movementVector.y = 0f;
+                        R_movementVector.Normalize();
+                        playerSkill.transform.forward = R_movementVector;
+                    }
                 }
                 break;
             //閃電發動技能圖示控制
@@ -90,7 +97,7 @@ public class PlayerSkill : Photon.MonoBehaviour
                     {
                         R_movementVector = Camera.main.transform.TransformDirection(R_inputVector);
                         R_movementVector.y = 0f;
-                        Skill_Img_DamageCircle.transform.localPosition = new Vector3(R_movementVector.x * 9, 0, R_movementVector.z * 9 * 10 / 8);
+                        playerSkill.transform.localPosition = new Vector3(R_movementVector.x * 9, 0, R_movementVector.z * 9 * 10 / 8);
                     }
 
 
@@ -120,7 +127,7 @@ public class PlayerSkill : Photon.MonoBehaviour
                     {
                         GameObject fireball = PhotonNetwork.Instantiate("FireBall_small", Skill_Img_Arrow.transform.position, Quaternion.identity, 0) as GameObject;
                         fireball.GetComponent<FireBall>().Team = GetComponent<PlayerAbilityValue>().TEAM;
-                        fireball.transform.forward = -Skill_Img_Arrow.transform.forward;
+                        fireball.transform.forward = -playerSkill.transform.forward;
                         SkillFire = false;
                         SkillStandBy = false;
                         Skill_Img_Arrow.transform.gameObject.SetActive(false);
@@ -138,7 +145,8 @@ public class PlayerSkill : Photon.MonoBehaviour
                             case 1:
                                 {
                                     //燃燒
-                                    fireball.AddComponent<Combustion>();
+                                    GetComponent<PhotonView>().RPC("AddCombustion", PhotonTargets.All, fireball.GetComponent<PhotonView>().viewID);
+                                    
 
 
                                 }
@@ -184,8 +192,8 @@ public class PlayerSkill : Photon.MonoBehaviour
                         {
                             GameObject ice = PhotonNetwork.Instantiate("Ice", Skill_Img_Arrow.transform.position, Quaternion.identity, 0) as GameObject;
                             ice.GetComponent<Ice>().Team = GetComponent<PlayerAbilityValue>().TEAM;
-                            ice.transform.forward = -Skill_Img_Arrow.transform.forward;
-                            ice.transform.Rotate(0, (i-1)*15, 0);
+                            ice.transform.forward = -playerSkill.transform.forward;
+                            ice.transform.Rotate(0, (i - 1) * 15, 0);
 
                             //附加進階技能
                             switch (a)
@@ -288,16 +296,17 @@ public class PlayerSkill : Photon.MonoBehaviour
                     }
                 }
                 break;
-
-
-
-
         }
 
 
     }
 
-
+    [PunRPC]
+    void AddCombustion(int fireball_ID)
+    {
+        PhotonView.Find(fireball_ID).gameObject.AddComponent<Combustion>();
+        PhotonView.Find(fireball_ID).GetComponent<PhotonView>().ObservedComponents.Add(PhotonView.Find(fireball_ID).gameObject.GetComponent<Combustion>());
+    }
 
 
 }

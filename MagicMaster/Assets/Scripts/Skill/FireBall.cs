@@ -24,33 +24,43 @@ public class FireBall : MonoBehaviour
 
     void Update()
     {
+        
         transform.Translate(0, 0, -Speed * Time.deltaTime);
         Lifetime -= Time.deltaTime;
         if (Lifetime <= 0)
-            Destroy(gameObject);
+            PhotonNetwork.Destroy(gameObject);
 
     }
-
+    
     void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == "Wall")
+        if (GetComponent<PhotonView>().isMine)
         {
-            Destroy(gameObject);
-            PhotonNetwork.Instantiate("FireBall_Explode", transform.position, Quaternion.identity, 0);
-        }
-
-        //打到玩家
-        if (other.gameObject.tag == "Player")
-        {
-            PlayerAbilityValue TargetPlayer_Data = other.transform.parent.GetComponent<PlayerAbilityValue>();
-            //打到敵方
-            if (TargetPlayer_Data.TEAM!=Team)
+            if (other.gameObject.tag == "Wall")
             {
-                Destroy(gameObject);
+                PhotonNetwork.Destroy(gameObject);
+
+                //GetComponent<PhotonView>().RPC("T", PhotonTargets.All);
                 PhotonNetwork.Instantiate("FireBall_Explode", transform.position, Quaternion.identity, 0);
-                TargetPlayer_Data.HEALTH -= Power;
+
+            }
+
+            //打到玩家
+            if (other.gameObject.tag == "Player")
+            {
+                PlayerAbilityValue TargetPlayer_Data = other.transform.parent.GetComponent<PlayerAbilityValue>();
+                //打到敵方
+                if (TargetPlayer_Data.TEAM != Team)
+                {
+                    PhotonNetwork.Destroy(gameObject);
+                    PhotonNetwork.Instantiate("FireBall_Explode", transform.position, Quaternion.identity, 0);
+                    print("YA");
+                    TargetPlayer_Data.HEALTH -= Power;
+                }
             }
         }
+
+
     }
 
     void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -60,6 +70,7 @@ public class FireBall : MonoBehaviour
             stream.SendNext(transform.position);
             stream.SendNext(transform.rotation);
             stream.SendNext(Team);
+
         }
         else
         {
@@ -67,16 +78,33 @@ public class FireBall : MonoBehaviour
             correctFireBallRot = (Quaternion)stream.ReceiveNext();
             Team = (int)stream.ReceiveNext();
 
+
+
             if (!appliedInitialUpdate)
             {
                 appliedInitialUpdate = true;
                 transform.position = correctFireBallPos;
                 transform.rotation = correctFireBallRot;
             }
+
+
         }
 
     }
 
+    [PunRPC]
+    void DestoryFireball(int Fireball_ID)
+    {
+        print("Fireball_ID:"+ Fireball_ID);
+        Destroy(PhotonView.Find(Fireball_ID).gameObject);
+    }
+
+
+    [PunRPC]
+    void T()
+    {
+        print("Test");
+    }
 
 
 

@@ -16,6 +16,8 @@ public class CombustionDamage : MonoBehaviour
 
     void Update()
     {
+        //GetComponent<PhotonView>().RPC("Damage", PhotonTargets.All, Target.GetComponent<PhotonView>().viewID);
+        
         if (Target.gameObject.GetComponent<PlayerAbilityValue>().HEALTH >= 0)
         {
             transform.position = Target.transform.position;
@@ -24,29 +26,44 @@ public class CombustionDamage : MonoBehaviour
         }
         else
         {
-            Destroy(gameObject);
+           PhotonNetwork.Destroy(gameObject);
+        }
+        
+    }
+
+
+    [PunRPC]
+    void Damage(int Target_ID)
+    {
+        if(PhotonView.Find(Target_ID).gameObject.GetComponent<PlayerAbilityValue>().HEALTH >= 0)
+        {
+            transform.position = PhotonView.Find(Target_ID).gameObject.transform.position;
+            PhotonView.Find(Target_ID).gameObject.GetComponent<PlayerAbilityValue>().HEALTH -= 1;
+            print("燒");
+        }
+        else
+        {
+            PhotonNetwork.Destroy(gameObject);
         }
     }
 
+
+    
     void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.isWriting)
         {
             stream.SendNext(transform.position);
+            stream.SendNext(Target.gameObject.GetComponent<PlayerAbilityValue>().HEALTH);
         }
         else
         {
-            correctFireBallPos = (Vector3)stream.ReceiveNext();
-
-            if (!appliedInitialUpdate)
-            {
-                appliedInitialUpdate = true;
-                transform.position = correctFireBallPos;
-            }
+            transform.position = (Vector3)stream.ReceiveNext();
+            //Target.gameObject.GetComponent<PlayerAbilityValue>().HEALTH= (int)stream.ReceiveNext();
         }
-
+        
     }
-
+    
 
 
 

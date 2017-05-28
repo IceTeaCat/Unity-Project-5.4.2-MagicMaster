@@ -32,9 +32,6 @@ public class MainMenu : Photon.MonoBehaviour
     {
         if (!PhotonNetwork.connected)
             PhotonNetwork.ConnectUsingSettings("v1.0");
-
-
-
     }
 
 

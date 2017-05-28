@@ -51,5 +51,31 @@ public class ElectricIncreaseRange : MonoBehaviour {
     }
 
 
+    void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.isWriting)
+        {
+            stream.SendNext(transform.position);
+            stream.SendNext(transform.rotation);
+            stream.SendNext(Team);
+        }
+        /*
+        else
+        {
+            correctFireBallPos = (Vector3)stream.ReceiveNext();
+            correctFireBallRot = (Quaternion)stream.ReceiveNext();
+            Team = (int)stream.ReceiveNext();
+
+            if (!appliedInitialUpdate)
+            {
+                appliedInitialUpdate = true;
+                transform.position = correctFireBallPos;
+                transform.rotation = correctFireBallRot;
+            }
+        }
+        */
+    }
+
+
 
 }

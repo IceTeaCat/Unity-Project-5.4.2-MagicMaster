@@ -57,11 +57,6 @@ public class Electric : MonoBehaviour {
             }
             
         }
-
-
-
-
-
         /*
         LR.SetPosition(0, origin.position);
         
@@ -91,5 +86,42 @@ public class Electric : MonoBehaviour {
         LR.SetPosition(1, d.position);
     }
     */
+
+
+    void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.isWriting)
+        {
+            stream.SendNext(transform.position);
+            stream.SendNext(transform.rotation);
+            stream.SendNext(Team);
+
+            stream.SendNext(Target);
+            stream.SendNext(LR);
+
+            stream.SendNext(origin);
+            stream.SendNext(destination);
+            stream.SendNext(Damage);
+        }
+        /*
+        else
+        {
+            correctFireBallPos = (Vector3)stream.ReceiveNext();
+            correctFireBallRot = (Quaternion)stream.ReceiveNext();
+            Team = (int)stream.ReceiveNext();
+
+            if (!appliedInitialUpdate)
+            {
+                appliedInitialUpdate = true;
+                transform.position = correctFireBallPos;
+                transform.rotation = correctFireBallRot;
+            }
+        }
+        */
+    }
+
+
+
+
 
 }
