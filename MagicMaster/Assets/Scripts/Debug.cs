@@ -15,7 +15,7 @@ public class Debug : MonoBehaviour
     void Update()
     {
         GetComponent<Text>().text = PhotonNetwork.connectionStateDetailed.ToString();
-        print(PhotonNetwork.connectionStateDetailed.ToString());
+        //print(PhotonNetwork.connectionStateDetailed.ToString());
     }
 
 }

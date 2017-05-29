@@ -189,7 +189,7 @@ public class MainMenu : Photon.MonoBehaviour
     {
         if (InTheRoomManager.ReadyPlayerCount == PhotonNetwork.room.PlayerCount)
         {
-            GetComponent<PhotonView>().RPC("STARTGAME", PhotonTargets.AllBufferedViaServer);
+            GetComponent<PhotonView>().RPC("STARTGAME", PhotonTargets.All);
 
         }
         else

@@ -22,29 +22,18 @@ public class Combustion : Photon.MonoBehaviour
         }
     }
 
-
-
-    void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        if (stream.isWriting)
-        {
-            stream.SendNext(transform.position);
-            stream.SendNext(transform.rotation);
-        }
-        else
-        {
-            transform.position = (Vector3)stream.ReceiveNext();
-            transform.rotation = (Quaternion)stream.ReceiveNext();
-        }
-    }
-
+   
 
     [PunRPC]
     void GetTarget(int Target_ID, int other_ID)
     {
-        //print(Target_ID + " : " + other_ID);
         PhotonView.Find(Target_ID).gameObject.GetComponent<CombustionDamage>().Target = PhotonView.Find(other_ID).gameObject;
+        PhotonView.Find(Target_ID).gameObject.transform.parent = PhotonView.Find(other_ID).gameObject.transform;
     }
+
+  
+
+
 
 
 }

@@ -126,7 +126,8 @@ public class PlayerSkill : Photon.MonoBehaviour
                     if (SkillFire)
                     {
                         GameObject fireball = PhotonNetwork.Instantiate("FireBall_small", Skill_Img_Arrow.transform.position, Quaternion.identity, 0) as GameObject;
-                        fireball.GetComponent<FireBall>().Team = GetComponent<PlayerAbilityValue>().TEAM;
+                        fireball.GetComponent<FireBall>().Team = _pav.TEAM;
+
                         fireball.transform.forward = -playerSkill.transform.forward;
                         SkillFire = false;
                         SkillStandBy = false;
@@ -155,7 +156,7 @@ public class PlayerSkill : Photon.MonoBehaviour
                             case 2:
                                 {
                                     //融合
-                                    fireball.AddComponent<Fusion>();
+                                    GetComponent<PhotonView>().RPC("AddFusion", PhotonTargets.All, fireball.GetComponent<PhotonView>().viewID);
 
 
                                 }
@@ -164,8 +165,7 @@ public class PlayerSkill : Photon.MonoBehaviour
                             case 3:
                                 {
                                     //濺散
-                                    fireball.AddComponent<Spatter>();
-
+                                    GetComponent<PhotonView>().RPC("AddSpatter", PhotonTargets.All, fireball.GetComponent<PhotonView>().viewID);
 
                                 }
                                 break;
@@ -301,11 +301,23 @@ public class PlayerSkill : Photon.MonoBehaviour
 
     }
 
+ 
     [PunRPC]
     void AddCombustion(int fireball_ID)
     {
         PhotonView.Find(fireball_ID).gameObject.AddComponent<Combustion>();
-        PhotonView.Find(fireball_ID).GetComponent<PhotonView>().ObservedComponents.Add(PhotonView.Find(fireball_ID).gameObject.GetComponent<Combustion>());
+    }
+
+    [PunRPC]
+    void AddFusion(int fireball_ID)
+    {
+        PhotonView.Find(fireball_ID).gameObject.AddComponent<Fusion>();  
+    }
+
+    [PunRPC]
+    void AddSpatter(int fireball_ID)
+    {
+        PhotonView.Find(fireball_ID).gameObject.AddComponent<Spatter>();
     }
 
 

@@ -225,7 +225,7 @@ namespace CnControls
             }
 
 			if (Stick.tag == "R_Stick") {
-				print ("放開");
+				//print ("放開");
                 Player.GetComponent<PlayerSkill>().SkillFire = true;
 			}
         }
@@ -259,7 +259,7 @@ namespace CnControls
             }
 
 			if (Stick.tag == "R_Stick") {
-				print ("按下");
+				//print ("按下");
                 Player.GetComponent<PlayerSkill>().SkillStandBy = true;
 			}
 
