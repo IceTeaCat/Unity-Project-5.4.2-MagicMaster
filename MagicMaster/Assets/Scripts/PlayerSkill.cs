@@ -28,7 +28,9 @@ public class PlayerSkill : Photon.MonoBehaviour
         if (_pav.SKILL == 2 && _pav.ADVANCED_SKILL == 3)
         {
             GameObject GR = PhotonNetwork.Instantiate("GlacierRange", transform.position, Quaternion.identity, 0);
-            GR.transform.parent = gameObject.transform;
+            //photonView.RPC("SetGRParent", PhotonTargets.All, new object[] { GR.GetComponent<PhotonView>().viewID, GetComponent<PhotonView>().viewID });
+            
+            //GR.transform.parent = gameObject.transform;
         }
 
         if (_pav.SKILL == 3 && _pav.ADVANCED_SKILL == 3)
@@ -207,21 +209,21 @@ public class PlayerSkill : Photon.MonoBehaviour
                                 case 1:
                                     {
                                         //結凍
-                                        ice.AddComponent<Frozen>();
+                                        GetComponent<PhotonView>().RPC("AddFrozen", PhotonTargets.All, ice.GetComponent<PhotonView>().viewID);
                                     }
                                     break;
 
                                 case 2:
                                     {
                                         //寒風
-                                        ice.AddComponent<Chill>();
+                                        GetComponent<PhotonView>().RPC("AddChill", PhotonTargets.All, ice.GetComponent<PhotonView>().viewID);
                                     }
                                     break;
 
                                 case 3:
                                     {
                                         //刺骨
-                                        ice.AddComponent<Glacier>();
+                                        GetComponent<PhotonView>().RPC("AddGlacier", PhotonTargets.All, ice.GetComponent<PhotonView>().viewID);
                                     }
                                     break;
                             }
@@ -301,7 +303,21 @@ public class PlayerSkill : Photon.MonoBehaviour
 
     }
 
- 
+    [PunRPC]
+    void SetGRParent(int GR_ID, int obj)
+    {
+        PhotonView.Find(GR_ID).gameObject.transform.parent = PhotonView.Find(obj).gameObject.transform;
+    }
+
+    [PunRPC]
+    void SetCanFire(bool x)
+    {
+        CanFire = x;
+    }
+
+
+
+    //-------------------------------
     [PunRPC]
     void AddCombustion(int fireball_ID)
     {
@@ -319,6 +335,28 @@ public class PlayerSkill : Photon.MonoBehaviour
     {
         PhotonView.Find(fireball_ID).gameObject.AddComponent<Spatter>();
     }
+
+    //-------------------------------
+    [PunRPC]
+    void AddFrozen(int ice_ID)
+    {
+        PhotonView.Find(ice_ID).gameObject.AddComponent<Frozen>();
+    }
+
+    [PunRPC]
+    void AddChill(int ice_ID)
+    {
+        PhotonView.Find(ice_ID).gameObject.AddComponent<Chill>();
+    }
+    
+    [PunRPC]
+    void AddGlacier(int ice_ID)
+    {
+        PhotonView.Find(ice_ID).gameObject.AddComponent<Glacier>();
+    }
+
+
+
 
 
 }

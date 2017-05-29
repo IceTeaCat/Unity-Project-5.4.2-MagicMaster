@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Ice : MonoBehaviour {
+public class Ice : Magic {
 
-
+    /*
     public int Team = -1;
 
     public float BornTime = 0;
@@ -11,6 +11,9 @@ public class Ice : MonoBehaviour {
     public int IceLevel = 1;
     public float Speed = 10;
     public int Power = 3;
+    */
+
+
 
     private Vector3 correctFireBallPos = Vector3.zero;
     private Quaternion correctFireBallRot = Quaternion.identity;
@@ -21,10 +24,16 @@ public class Ice : MonoBehaviour {
     }
 	
 	void Update () {
-        transform.Translate(0, 0, -Speed * Time.deltaTime);
-        Lifetime -= Time.deltaTime;
-        if (Lifetime <= 0)
-            Destroy(gameObject);
+        if (!IsDestroy)
+        {
+            transform.Translate(0, 0, -MoveSpeed * Time.deltaTime);
+            LifeTime -= Time.deltaTime;
+            if (LifeTime <= 0)
+            {
+                IsDestroy = true;
+                PhotonNetwork.Destroy(gameObject);
+            }
+        }
     }
 
 
@@ -32,6 +41,50 @@ public class Ice : MonoBehaviour {
 
     void OnTriggerEnter(Collider other)
     {
+        if (GetComponent<PhotonView>().isMine)
+        {
+            if (!IsDestroy)
+            {
+                //打到牆壁or障礙物
+                if (other.gameObject.tag == "Wall")
+                {
+                    photonView.RPC("HitFX_Function", PhotonTargets.All, new object[] { 0, transform.position });
+                    IsDestroy = true;
+                    PhotonNetwork.Destroy(gameObject);
+                }
+
+                //打到玩家
+                if (other.gameObject.tag == "Player")
+                {
+                    PlayerAbilityValue TargetPlayer_Data = other.gameObject.transform.parent.GetComponent<PlayerAbilityValue>();
+                    //打到敵方
+                    if (TargetPlayer_Data.TEAM != Team)
+                    {
+                        photonView.RPC("HitFX_Function", PhotonTargets.All, new object[] { 0, transform.position });
+                        other.gameObject.transform.parent.gameObject.GetPhotonView().RPC("SetDamage", PhotonTargets.All, Power);
+                        IsDestroy = true;
+                        PhotonNetwork.Destroy(gameObject);
+                    }
+                }
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        /*
         if (other.gameObject.tag == "Wall")
         {
             Destroy(gameObject);
@@ -50,6 +103,10 @@ public class Ice : MonoBehaviour {
                 Destroy(gameObject);
             }
         }
+        */
+
+
+
     }
 
 

@@ -12,7 +12,7 @@ public class ChillSlowEffect : MonoBehaviour {
     void Start () {
         TargetPlayer_Data = GetComponent<PlayerAbilityValue>();
         TargetOriginalSpeed = TargetPlayer_Data.MOVE_SPEED;
-        TargetPlayer_Data.MOVE_SPEED -= SlowPower;
+        TargetPlayer_Data.MOVE_SPEED *= 0.5f;
     }
 	
 	
