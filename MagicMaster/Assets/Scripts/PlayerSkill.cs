@@ -36,8 +36,10 @@ public class PlayerSkill : Photon.MonoBehaviour
         if (_pav.SKILL == 3 && _pav.ADVANCED_SKILL == 3)
         {
             GameObject EIR = PhotonNetwork.Instantiate("ElectricIncreaseRange", transform.position, Quaternion.identity, 0);
-            EIR.transform.parent = gameObject.transform;
-            EIR.GetComponent<ElectricIncreaseRange>().Team = _pav.TEAM;
+            //photonView.RPC("SetEIRParent", PhotonTargets.All, new object[] { GR.GetComponent<PhotonView>().viewID, GetComponent<PhotonView>().viewID });
+
+            //EIR.transform.parent = gameObject.transform;
+            //EIR.GetComponent<ElectricIncreaseRange>().Team = _pav.TEAM;
 
         }
 
@@ -316,7 +318,16 @@ public class PlayerSkill : Photon.MonoBehaviour
     void SetGRParent(int GR_ID, int obj)
     {
         PhotonView.Find(GR_ID).gameObject.transform.parent = PhotonView.Find(obj).gameObject.transform;
+        PhotonView.Find(GR_ID).gameObject.transform.localPosition = Vector3.zero;
     }
+
+    [PunRPC]
+    void SetEIRParent(int EIR_ID, int obj)
+    {
+        PhotonView.Find(EIR_ID).gameObject.transform.parent = PhotonView.Find(obj).gameObject.transform;
+        PhotonView.Find(EIR_ID).gameObject.transform.localPosition = Vector3.zero;
+    }
+
 
     [PunRPC]
     void SetCanFire(bool x)

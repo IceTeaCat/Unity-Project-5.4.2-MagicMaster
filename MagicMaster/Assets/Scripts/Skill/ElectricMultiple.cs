@@ -33,12 +33,13 @@ public class ElectricMultiple : Photon.MonoBehaviour
                     ElectricLR.GetComponent<Electric>().Target = TargetEnemy;
                     */
 
-                    /*
+                    
                     if (Player.GetComponent<ElectricIncrease>())
                     {
-                        ElectricLR.GetComponent<Electric>().isPowerUp = true;
+                        ElectricLR.GetComponent<PhotonView>().RPC("SetIsPowerUp", PhotonTargets.All,true);
+                        //ElectricLR.GetComponent<Electric>().isPowerUp = true;                      
                     }
-                    */
+                    
 
                 }
                 PhotonNetwork.Destroy(gameObject);

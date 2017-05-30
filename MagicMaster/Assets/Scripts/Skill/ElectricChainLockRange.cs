@@ -60,12 +60,13 @@ public class ElectricChainLockRange : Photon.MonoBehaviour
                                     ElectricLR.GetComponent<Electric>().origin = OldEnemy;
                                     ElectricLR.GetComponent<Electric>().destination = TargetEnemy;
                                     */
-                                    /*
+
                                     if (Player.GetComponent<ElectricIncrease>())
                                     {
-                                        ElectricLR.GetComponent<Electric>().isPowerUp = true;
+                                        ElectricLR.GetComponent<PhotonView>().RPC("SetIsPowerUp", PhotonTargets.All, true);
+                                        //ElectricLR.GetComponent<Electric>().isPowerUp = true;                      
                                     }
-                                    */
+
                                     /*
                                     ElectricLR.GetComponent<Electric>().Target = TargetEnemy;
 

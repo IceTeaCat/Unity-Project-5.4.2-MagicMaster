@@ -57,13 +57,21 @@ public class ElectricLockRange : Photon.MonoBehaviour
 
                         if (Player.GetComponent<ElectricIncrease>())
                         {
-                            ElectricLR.GetComponent<Electric>().isPowerUp = true;
+                            ElectricLR.GetComponent<PhotonView>().RPC("SetIsPowerUp", PhotonTargets.All, true);
+                            //ElectricLR.GetComponent<Electric>().isPowerUp = true;                      
                         }
 
 
                         IsDestroy = true;
                         PhotonNetwork.Destroy(gameObject);
                     }
+
+                    if(Enemys.Count == 0)
+                    {
+                        IsDestroy = true;
+                        PhotonNetwork.Destroy(gameObject);
+                    }
+
 
                 }
             }

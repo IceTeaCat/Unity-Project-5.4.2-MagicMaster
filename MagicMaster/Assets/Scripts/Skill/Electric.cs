@@ -60,14 +60,20 @@ public class Electric : Photon.MonoBehaviour {
 
             if (origin != null && destination != null)
             {
-         
+
+           
                 if (isPowerUp)
                 {
+                    GetComponent<PhotonView>().RPC("SetPowerUpEffect", PhotonTargets.All);
+                    /*
                     if (!destination.GetComponent<DizzyEffect>())
                         destination.AddComponent<DizzyEffect>();
                     else
                         destination.GetComponent<DizzyEffect>().DizzyTime = 2;
+                    */
                 }
+
+
 
             }
         }
@@ -126,6 +132,21 @@ public class Electric : Photon.MonoBehaviour {
 
     }
 
+
+    [PunRPC]
+    void SetIsPowerUp(bool x)
+    {
+        isPowerUp = x;
+    }
+
+    [PunRPC]
+    void SetPowerUpEffect()
+    {
+        if (!destination.GetComponent<DizzyEffect>())
+            destination.AddComponent<DizzyEffect>();
+        else
+            destination.GetComponent<DizzyEffect>().DizzyTime = 2;
+    }
 
 
 }

@@ -3,7 +3,7 @@ using System.Collections;
 
 public class ElectricIncreaseRange : MonoBehaviour {
 
-    public int Team;
+    //public int Team;
 
 	void Start () {
 	
@@ -57,7 +57,7 @@ public class ElectricIncreaseRange : MonoBehaviour {
         {
             stream.SendNext(transform.position);
             stream.SendNext(transform.rotation);
-            stream.SendNext(Team);
+            //stream.SendNext(Team);
         }
         /*
         else

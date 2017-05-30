@@ -12,15 +12,8 @@ public class ElectricChain : Photon.MonoBehaviour {
     public GameObject TargetEnemy;
     public GameObject PlayerOrEnemy;
 
-    //GameObject ElectricChainLockRange;
-
     bool isCreate=false;
-    /*
-    private void Awake()
-    {
-        ElectricChainLockRange = Resources.Load("ElectricChainLockRange") as GameObject;
-    }
-    */
+
     void Update () {
         if (photonView.isMine)
         {
@@ -36,8 +29,6 @@ public class ElectricChain : Photon.MonoBehaviour {
                 ECLR.GetComponent<ElectricChainLockRange>().ELR = gameObject;
                 ECLR.GetComponent<ElectricChainLockRange>().Player = Player;
                 isCreate = true;
-
-
                 */
 
 
@@ -68,12 +59,13 @@ public class ElectricChain : Photon.MonoBehaviour {
                 ElectricLR.GetComponent<Electric>().origin = PlayerOrEnemy;
                 ElectricLR.GetComponent<Electric>().destination = TargetEnemy;
                 */
-                /*
+
                 if (Player.GetComponent<ElectricIncrease>())
                 {
-                    ElectricLR.GetComponent<Electric>().isPowerUp = true;
+                    ElectricLR.GetComponent<PhotonView>().RPC("SetIsPowerUp", PhotonTargets.All, true);
+                    //ElectricLR.GetComponent<Electric>().isPowerUp = true;                      
                 }
-                */
+
                 /*
                 ElectricLR.GetComponent<Electric>().Target = TargetEnemy;
                 */

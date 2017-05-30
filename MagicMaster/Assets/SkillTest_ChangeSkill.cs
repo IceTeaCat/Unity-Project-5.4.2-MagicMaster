@@ -106,6 +106,10 @@ public class SkillTest_ChangeSkill : Photon.MonoBehaviour {
         {
             gameObject.GetComponent<PlayerAbilityValue>().SKILL = 3;
             gameObject.GetComponent<PlayerAbilityValue>().ADVANCED_SKILL = 3;
+
+            GameObject EIR = PhotonNetwork.Instantiate("ElectricIncreaseRange", transform.position, Quaternion.identity, 0);
+            photonView.RPC("SetEIRParent", PhotonTargets.All, new object[] { EIR.GetComponent<PhotonView>().viewID, GetComponent<PhotonView>().viewID });
+
         }
 
 

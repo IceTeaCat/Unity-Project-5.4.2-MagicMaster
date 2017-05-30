@@ -12,7 +12,7 @@ public class DizzyEffect : MonoBehaviour {
         GetComponent<PlayerAbilityValue>().MOVE_SPEED=0;
 
         //Test
-        GetComponent<EnemyTest>().enabled = false;
+        //GetComponent<EnemyTest>().enabled = false;
     }
 	
 	
@@ -22,7 +22,7 @@ public class DizzyEffect : MonoBehaviour {
         {
             GetComponent<PlayerAbilityValue>().MOVE_SPEED = OriginSpeed;
             //Test
-            GetComponent<EnemyTest>().enabled = true;
+            //GetComponent<EnemyTest>().enabled = true;
             Destroy(GetComponent<DizzyEffect>());
         }
 
