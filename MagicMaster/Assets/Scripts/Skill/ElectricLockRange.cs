@@ -46,7 +46,7 @@ public class ElectricLockRange : Photon.MonoBehaviour
                     {
                         GameObject ElectricLR = PhotonNetwork.Instantiate("ElectricLR", TargetEnemy.transform.position, Quaternion.identity, 0);
                         GetComponent<PhotonView>().RPC("CreateElectricLR", PhotonTargets.All, ElectricLR.GetComponent<PhotonView>().viewID);
-
+                        print("YA");
                         /*
                         ElectricLR.GetComponent<Electric>().LR = ElectricLR.GetComponent<LineRenderer>();
                         ElectricLR.GetComponent<Electric>().origin = PlayerOrEnemy;
@@ -61,10 +61,10 @@ public class ElectricLockRange : Photon.MonoBehaviour
                         }
 
 
-                       
+                        IsDestroy = true;
+                        PhotonNetwork.Destroy(gameObject);
                     }
-                    IsDestroy = true;
-                    PhotonNetwork.Destroy(gameObject);
+
                 }
             }
         }

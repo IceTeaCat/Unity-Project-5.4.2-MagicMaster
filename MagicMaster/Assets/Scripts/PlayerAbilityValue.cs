@@ -40,7 +40,13 @@ public class PlayerAbilityValue : Photon.MonoBehaviour
             if (HEALTH <= 0)
             {
                 IsDestroy = true;
-                PhotonNetwork.Destroy(gameObject);
+
+                transform.GetChild(0).gameObject.SetActive(false);
+                transform.GetChild(1).gameObject.SetActive(false);
+                transform.GetChild(2).gameObject.SetActive(false);
+                GetComponent<PlayerController>().enabled = false;
+                GetComponent<PlayerSkill>().enabled = false;
+                //PhotonNetwork.Destroy(gameObject);
             }
     }
 
