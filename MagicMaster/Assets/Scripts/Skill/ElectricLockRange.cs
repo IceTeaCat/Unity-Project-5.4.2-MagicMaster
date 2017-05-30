@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class ElectricLockRange : MonoBehaviour
+public class ElectricLockRange : Photon.MonoBehaviour
 {
     float DamageTime = 0.01f;
 
@@ -14,44 +14,60 @@ public class ElectricLockRange : MonoBehaviour
     public int Team = -1;
     public List<GameObject> Enemys = new List<GameObject>();
     public List<float> D = new List<float>();
-    int MinD;
+    public int MinD;
 
     public GameObject TargetEnemy;
 
     int NowChainCount = 0;
 
+    public bool IsDestroy = false;
+
     void Start()
     {
-        TargetEnemy = null;
+        //TargetEnemy = null;
     }
 
 
     void Update()
     {
-        DamageTime -= Time.deltaTime;
         CaleDistance();
-        if (DamageTime <= 0 )
+        if (photonView.isMine)
         {
-            if (Enemys.Count != 0 && !GetComponent<ElectricMultiple>() && !GetComponent<ElectricChain>())
+            if (!IsDestroy)
             {
-                GameObject ElectricLR = PhotonNetwork.Instantiate("ElectricLR", TargetEnemy.transform.position, Quaternion.identity, 0) as GameObject;
-                ElectricLR.GetComponent<Electric>().LR = ElectricLR.GetComponent<LineRenderer>();
-                ElectricLR.GetComponent<Electric>().origin = PlayerOrEnemy;
-                ElectricLR.GetComponent<Electric>().destination = TargetEnemy;
 
-                ElectricLR.GetComponent<Electric>().Target = TargetEnemy;
+                DamageTime -= Time.deltaTime;
 
-                if(Player.GetComponent<ElectricIncrease>())
+                //GetComponent<PhotonView>().RPC("CaleDistance", PhotonTargets.All);
+
+                if (DamageTime <= 0)
                 {
-                    ElectricLR.GetComponent<Electric>().isPowerUp = true;
+                    if (Enemys.Count != 0 && TargetEnemy!=null && !GetComponent<ElectricMultiple>() && !GetComponent<ElectricChain>())
+                    {
+                        GameObject ElectricLR = PhotonNetwork.Instantiate("ElectricLR", TargetEnemy.transform.position, Quaternion.identity, 0);
+                        GetComponent<PhotonView>().RPC("CreateElectricLR", PhotonTargets.All, ElectricLR.GetComponent<PhotonView>().viewID);
+
+                        /*
+                        ElectricLR.GetComponent<Electric>().LR = ElectricLR.GetComponent<LineRenderer>();
+                        ElectricLR.GetComponent<Electric>().origin = PlayerOrEnemy;
+                        ElectricLR.GetComponent<Electric>().destination = TargetEnemy;
+                        ElectricLR.GetComponent<Electric>().Target = TargetEnemy;
+                        */
+
+
+                        if (Player.GetComponent<ElectricIncrease>())
+                        {
+                            ElectricLR.GetComponent<Electric>().isPowerUp = true;
+                        }
+
+
+                       
+                    }
+                    IsDestroy = true;
+                    PhotonNetwork.Destroy(gameObject);
                 }
-                print(Player.name);
-                Destroy(gameObject);
             }
-
         }
-
-
 
 
     }
@@ -67,20 +83,57 @@ public class ElectricLockRange : MonoBehaviour
             if (TargetPlayer_Data.TEAM != Team)
             {
                 Enemys.Add(TargetPlayer_Data.gameObject);
-                D.Add(Vector3.Distance(TargetPlayer_Data.gameObject.transform.position, PlayerOrEnemy.transform.position));
+                //D.Add(Vector3.Distance(TargetPlayer_Data.gameObject.transform.position, PlayerOrEnemy.transform.position));
+                D.Add(Vector3.Distance(TargetPlayer_Data.gameObject.transform.position, Player.transform.position));
             }
         }
     }
 
+    //[PunRPC]
     void CaleDistance()
     {
         if (D.Count != 0)
         {
             MinD = D.IndexOf(Mathf.Min(D.ToArray()));
-            TargetEnemy = Enemys[MinD];
+            photonView.RPC("SetTargetEnemy", PhotonTargets.All, Enemys[MinD].GetComponent<PhotonView>().viewID);
+            //TargetEnemy = Enemys[MinD];
         }
+        /*
         else
-            Destroy(gameObject);
+            PhotonNetwork.Destroy(gameObject);
+        */
+            
+    }
+
+    [PunRPC]
+    void SetTargetEnemy(int Enemys_ID)
+    {
+        TargetEnemy = PhotonView.Find(Enemys_ID).gameObject;
+    }
+
+
+
+    
+    [PunRPC]
+    void CreateElectricLR(int ElectricLR_ID)
+    {
+        PhotonView.Find(ElectricLR_ID).gameObject.GetComponent<Electric>().LR = PhotonView.Find(ElectricLR_ID).gameObject.GetComponent<LineRenderer>();
+        PhotonView.Find(ElectricLR_ID).gameObject.GetComponent<Electric>().origin = PlayerOrEnemy;
+        PhotonView.Find(ElectricLR_ID).gameObject.GetComponent<Electric>().destination = TargetEnemy;
+        PhotonView.Find(ElectricLR_ID).gameObject.GetComponent<Electric>().Target = TargetEnemy;
+        PhotonView.Find(ElectricLR_ID).gameObject.GetComponent<Electric>().Team = Team;
+    }
+    
+
+
+
+    void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.isWriting)
+        {
+            stream.SendNext(transform.position);
+            stream.SendNext(transform.rotation);
+        }
     }
 
 }

@@ -88,6 +88,8 @@ public class PlayerAbilityValue : Photon.MonoBehaviour
     {
         if (HEALTH >= 0)
             HEALTH -= Power;
+
+        print("受到攻擊");
     }
 
 

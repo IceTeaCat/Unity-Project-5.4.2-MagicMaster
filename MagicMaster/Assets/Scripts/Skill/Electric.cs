@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Electric : MonoBehaviour {
+public class Electric : Photon.MonoBehaviour {
 
     
     //增幅效果
@@ -29,37 +29,51 @@ public class Electric : MonoBehaviour {
     float MatOffsetSpeed = 8;
 
     void Start () {
-        LR = GetComponent<LineRenderer>();
-        //LR.SetWidth(0.45f, 0.45f);
-        LR.SetWidth(2, 2);
-        Destroy(gameObject, DieTime);
-
-        Target.GetComponent<PlayerAbilityValue>().HEALTH -= Damage;
-    }
-	
-	
-	void Update () {
-
-        if (origin != null && destination != null)
+        if (photonView.isMine)
         {
-            LR.SetPosition(0, origin.transform.position);
-            LR.SetPosition(1, destination.transform.position);
-            
-            GetComponent<LineRenderer>().material.SetTextureOffset("_MainTex", new Vector2(MatOffset, 0));
-            MatOffset -= Time.deltaTime* MatOffsetSpeed;
-            
-            if (isPowerUp)
+            LR = GetComponent<LineRenderer>();
+            LR.SetWidth(2, 2);
+            //Destroy(gameObject, DieTime);
+
+            Target.GetComponent<PhotonView>().RPC("SetDamage", PhotonTargets.All, Damage);
+        }
+    }
+
+
+    void Update()
+    {
+
+        LR.SetPosition(0, origin.transform.position);
+        LR.SetPosition(1, destination.transform.position);
+        gameObject.GetComponent<LineRenderer>().enabled = true;
+
+        GetComponent<LineRenderer>().material.SetTextureOffset("_MainTex", new Vector2(MatOffset, 0));
+        MatOffset -= Time.deltaTime * MatOffsetSpeed;
+
+        if (GetComponent<PhotonView>().isMine)
+        {
+            DieTime -= Time.deltaTime;
+            if (DieTime <= 0)
             {
-                if (!destination.GetComponent<DizzyEffect>())
-                    destination.AddComponent<DizzyEffect>();
-                else
-                    destination.GetComponent<DizzyEffect>().DizzyTime = 2;
+                PhotonNetwork.Destroy(gameObject);
             }
-            
+
+            if (origin != null && destination != null)
+            {
+         
+                if (isPowerUp)
+                {
+                    if (!destination.GetComponent<DizzyEffect>())
+                        destination.AddComponent<DizzyEffect>();
+                    else
+                        destination.GetComponent<DizzyEffect>().DizzyTime = 2;
+                }
+
+            }
         }
         /*
         LR.SetPosition(0, origin.position);
-        
+
         dist = Vector3.Distance(origin.position, destination.position);
 
         if (counter<dist)
@@ -74,11 +88,18 @@ public class Electric : MonoBehaviour {
             pointAlongLine = x * Vector3.Normalize(pointB - pointA) + pointA;
             LR.SetPosition(1, pointAlongLine);
         }
-        
+
         else
             LR.SetPosition(1, destination.position);
         */
+
+        /*
+        //閃電多生一個BUG無法解決的最終解決辦法FUck!!!
+        else
+            Destroy(gameObject);
+        */
     }
+
     /*
    public  void CreateLR(Transform o,Transform d)
     {
@@ -95,32 +116,15 @@ public class Electric : MonoBehaviour {
             stream.SendNext(transform.position);
             stream.SendNext(transform.rotation);
             stream.SendNext(Team);
+            /*
+            stream.SendNext(origin.transform.position);
+            stream.SendNext(destination.transform.position);
+            */
 
-            stream.SendNext(Target);
-            stream.SendNext(LR);
-
-            stream.SendNext(origin);
-            stream.SendNext(destination);
             stream.SendNext(Damage);
         }
-        /*
-        else
-        {
-            correctFireBallPos = (Vector3)stream.ReceiveNext();
-            correctFireBallRot = (Quaternion)stream.ReceiveNext();
-            Team = (int)stream.ReceiveNext();
 
-            if (!appliedInitialUpdate)
-            {
-                appliedInitialUpdate = true;
-                transform.position = correctFireBallPos;
-                transform.rotation = correctFireBallRot;
-            }
-        }
-        */
     }
-
-
 
 
 

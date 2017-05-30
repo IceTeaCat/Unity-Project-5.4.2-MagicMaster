@@ -99,7 +99,7 @@ public class PlayerSkill : Photon.MonoBehaviour
                     {
                         R_movementVector = Camera.main.transform.TransformDirection(R_inputVector);
                         R_movementVector.y = 0f;
-                        playerSkill.transform.localPosition = new Vector3(R_movementVector.x * 9, 0, R_movementVector.z * 9 * 10 / 8);
+                        Skill_Img_DamageCircle.transform.localPosition = new Vector3(R_movementVector.x * 9, 0, R_movementVector.z * 9 * 10 / 8);
                     }
 
 
@@ -131,6 +131,7 @@ public class PlayerSkill : Photon.MonoBehaviour
                         fireball.GetComponent<FireBall>().Team = _pav.TEAM;
 
                         fireball.transform.forward = -playerSkill.transform.forward;
+                        playerSkill.transform.rotation = Quaternion.identity;
                         SkillFire = false;
                         SkillStandBy = false;
                         Skill_Img_Arrow.transform.gameObject.SetActive(false);
@@ -190,11 +191,13 @@ public class PlayerSkill : Photon.MonoBehaviour
                     //施放技能 
                     if (SkillFire)
                     {
+                      
                         for (int i = 0; i < 3; i++)
                         {
                             GameObject ice = PhotonNetwork.Instantiate("Ice", Skill_Img_Arrow.transform.position, Quaternion.identity, 0) as GameObject;
                             ice.GetComponent<Ice>().Team = GetComponent<PlayerAbilityValue>().TEAM;
                             ice.transform.forward = -playerSkill.transform.forward;
+                            
                             ice.transform.Rotate(0, (i - 1) * 15, 0);
 
                             //附加進階技能
@@ -229,7 +232,7 @@ public class PlayerSkill : Photon.MonoBehaviour
                             }
 
                         }
-
+                        playerSkill.transform.rotation = Quaternion.identity;
                         SkillFire = false;
                         SkillStandBy = false;
                         Skill_Img_Arrow.transform.gameObject.SetActive(false);
@@ -252,11 +255,14 @@ public class PlayerSkill : Photon.MonoBehaviour
                     //施放技能 
                     if (SkillFire)
                     {
-                        GameObject SR = Instantiate(ElectricLockRange, Skill_Img_DamageCircle.transform.position, Quaternion.identity) as GameObject;
-                        SR.GetComponent<ElectricLockRange>().PlayerOrEnemy = _pav.gameObject;
-                        SR.GetComponent<ElectricLockRange>().Player = _pav.gameObject;
-                        SR.GetComponent<ElectricLockRange>().Team = _pav.TEAM;
-                        SR.transform.localScale = Skill_Img_DamageCircle.transform.localScale;
+                        GameObject sr = PhotonNetwork.Instantiate("ElectricLockRange", Skill_Img_DamageCircle.transform.position, Quaternion.identity, 0);
+                        GetComponent<PhotonView>().RPC("CreateSR", PhotonTargets.All, sr.GetComponent<PhotonView>().viewID);
+                        /*
+                        GameObject sr = Instantiate(Resources.Load("ElectricLockRange"), Skill_Img_DamageCircle.transform.position, Quaternion.identity) as GameObject;
+                        sr.GetComponent<ElectricLockRange>().PlayerOrEnemy = _pav.gameObject;
+                        sr.GetComponent<ElectricLockRange>().Player = _pav.gameObject;
+                        sr.GetComponent<ElectricLockRange>().Team = _pav.TEAM;
+                        */
                         //附加進階技能
                         switch (a)
                         {
@@ -269,23 +275,26 @@ public class PlayerSkill : Photon.MonoBehaviour
                             case 1:
                                 {
                                     //多重
-                                    SR.AddComponent<ElectricMultiple>();
+                                    GetComponent<PhotonView>().RPC("AddElectricMultiple", PhotonTargets.All, sr.GetComponent<PhotonView>().viewID);
                                 }
                                 break;
 
                             case 2:
                                 {
                                     //連鎖
-                                    SR.AddComponent<ElectricChain>();
-                                    SR.GetComponent<ElectricChain>().Team = _pav.TEAM;
-                                    SR.GetComponent<ElectricChain>().Player = _pav.gameObject;
+                                    GetComponent<PhotonView>().RPC("AddElectricChain", PhotonTargets.All, sr.GetComponent<PhotonView>().viewID);
+                                    /*
+                                    sr.AddComponent<ElectricChain>();
+                                    sr.GetComponent<ElectricChain>().Team = _pav.TEAM;
+                                    sr.GetComponent<ElectricChain>().Player = _pav.gameObject;
+                                    */
                                 }
                                 break;
 
                             case 3:
                                 {
                                     //增幅
-                                    //SR.AddComponent<Glacier>();
+                                    //sr.AddComponent<>();
                                 }
                                 break;
                         }
@@ -355,7 +364,40 @@ public class PlayerSkill : Photon.MonoBehaviour
         PhotonView.Find(ice_ID).gameObject.AddComponent<Glacier>();
     }
 
+    //-------------------------------
+    [PunRPC]
+    void CreateSR(int sr_ID)
+    {
+        //PhotonView.Find(sr_ID).gameObject.AddComponent<ElectricMultiple>();
 
+        PhotonView.Find(sr_ID).gameObject.GetComponent<ElectricLockRange>().PlayerOrEnemy = _pav.gameObject;
+        PhotonView.Find(sr_ID).gameObject.GetComponent<ElectricLockRange>().Player = _pav.gameObject;
+        PhotonView.Find(sr_ID).gameObject.GetComponent<ElectricLockRange>().Team = _pav.TEAM;
+        //PhotonView.Find(sr_ID).gameObject.transform.localScale = Skill_Img_DamageCircle.transform.localScale;
+
+    }
+
+
+
+    [PunRPC]
+    void AddElectricMultiple(int sr_ID)
+    {
+        PhotonView.Find(sr_ID).gameObject.AddComponent<ElectricMultiple>();
+    }
+
+    [PunRPC]
+    void AddElectricChain(int sr_ID)
+    {
+        PhotonView.Find(sr_ID).gameObject.AddComponent<ElectricChain>();
+        PhotonView.Find(sr_ID).gameObject.GetComponent<ElectricChain>().Team = _pav.TEAM;
+        PhotonView.Find(sr_ID).gameObject.GetComponent<ElectricChain>().Player = _pav.gameObject;
+    }
+
+    [PunRPC]
+    void AddElectricIncrease(int sr_ID)
+    {
+        //PhotonView.Find(ice_ID).gameObject.AddComponent<>();
+    }
 
 
 

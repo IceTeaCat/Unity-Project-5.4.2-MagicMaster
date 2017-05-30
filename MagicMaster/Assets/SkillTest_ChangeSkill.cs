@@ -83,6 +83,35 @@ public class SkillTest_ChangeSkill : Photon.MonoBehaviour {
 
 
 
+        //閃電
+        if (Input.GetKeyDown(KeyCode.Alpha9))
+        {
+            gameObject.GetComponent<PlayerAbilityValue>().SKILL = 3;
+            gameObject.GetComponent<PlayerAbilityValue>().ADVANCED_SKILL = 0;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha0))
+        {
+            gameObject.GetComponent<PlayerAbilityValue>().SKILL = 3;
+            gameObject.GetComponent<PlayerAbilityValue>().ADVANCED_SKILL = 1;
+        }
+
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            gameObject.GetComponent<PlayerAbilityValue>().SKILL = 3;
+            gameObject.GetComponent<PlayerAbilityValue>().ADVANCED_SKILL = 2;
+        }
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            gameObject.GetComponent<PlayerAbilityValue>().SKILL = 3;
+            gameObject.GetComponent<PlayerAbilityValue>().ADVANCED_SKILL = 3;
+        }
+
+
+
+
+
 
 
     }
