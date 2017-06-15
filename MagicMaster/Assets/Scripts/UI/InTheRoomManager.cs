@@ -36,7 +36,7 @@ public class InTheRoomManager : Photon.MonoBehaviour
 
     void InTheRoom()
     {
-        GameObject playerbox = PhotonNetwork.Instantiate(this.playerPrefabName, transform.position, Quaternion.identity, 0);
+        GameObject playerbox = PhotonNetwork.Instantiate(this.playerPrefabName, transform.position, Quaternion.Euler(0,0,0), 0);
     }
     
     private void Update()

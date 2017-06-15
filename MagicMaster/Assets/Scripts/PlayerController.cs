@@ -5,6 +5,7 @@ using CnControls;
 public class PlayerController : Photon.MonoBehaviour {
 
     PlayerAbilityValue _pav;
+    Animator _anim;
 
 	public GameObject PlayerCharacter;
 	CharacterController _characterController;
@@ -13,6 +14,8 @@ public class PlayerController : Photon.MonoBehaviour {
 	private Quaternion correctPlayerRot = Quaternion.identity;
 	private bool appliedInitialUpdate;
 
+    public bool isDown;
+
     void Awake()
     {
 
@@ -20,6 +23,7 @@ public class PlayerController : Photon.MonoBehaviour {
     
     void Start () {
         _pav = GetComponent<PlayerAbilityValue>();
+        _anim = transform.GetChild(1).GetChild(0).GetComponent<Animator>();
         _characterController = PlayerCharacter.GetComponent<CharacterController> ();
     }
 
@@ -30,8 +34,13 @@ public class PlayerController : Photon.MonoBehaviour {
 			Camera.main.GetComponent<OrthographicCamera> ().target = this.gameObject.transform;
             //Camera.main.transform.localPosition = new Vector3(0, 13, -10);
 
-            MoveJoystick();
-           
+            if (!GetComponent<PlayerSkill>().Fireing)
+            {
+                MoveJoystick();
+
+                if (!isDown)
+                    _anim.SetFloat("Speed", 0);
+            }
         }
 		else
 		{
@@ -54,6 +63,12 @@ public class PlayerController : Photon.MonoBehaviour {
             L_movementVector.y = 0f;
             PlayerCharacter.transform.forward = L_movementVector;
             transform.position += L_movementVector * Time.deltaTime * _pav.MOVE_SPEED;
+            //print(L_movementVector * Time.deltaTime * _pav.MOVE_SPEED);
+            float temp = Mathf.Abs(L_movementVector.magnitude * Time.deltaTime * _pav.MOVE_SPEED);
+            if (isDown)
+                _anim.SetFloat("Speed", temp);
+
+
         }
         L_movementVector += Physics.gravity;
     }

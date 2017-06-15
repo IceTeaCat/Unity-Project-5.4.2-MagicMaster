@@ -4,6 +4,8 @@ using UnityEngine.UI;
 
 public class MainMenu : Photon.MonoBehaviour
 {
+    //出生點
+    public Transform[] StartPos;
 
     //UI
     public GameObject CreatePlayerPanel;
@@ -14,6 +16,8 @@ public class MainMenu : Photon.MonoBehaviour
     public GameObject StorePanel;
     public GameObject StoreSkillList;
     public GameObject StoreGemList;
+    public GameObject GamePanel;
+    public GameObject GameOverPanel;
 
     public Text CreatePlayerName;
 
@@ -22,7 +26,7 @@ public class MainMenu : Photon.MonoBehaviour
     public Text LobbyPlayerName;
 
 
-    public string playerPrefabName = "Player";
+    string playerPrefabName = "NewPlayer";
 
 
     //動作
@@ -38,7 +42,7 @@ public class MainMenu : Photon.MonoBehaviour
     private string roomName = "房間名稱";
     private Vector2 scrollPos = Vector2.zero;
 
-     void Start()
+    void Start()
     {
 
     }
@@ -87,7 +91,7 @@ public class MainMenu : Photon.MonoBehaviour
         JoinRoomPanel.SetActive(false);
 
 
-        
+
 
         //玩家加入房間後
         print("玩家已加入房間:" + PhotonNetwork.room.name);
@@ -196,15 +200,30 @@ public class MainMenu : Photon.MonoBehaviour
             print("只有" + InTheRoomManager.ReadyPlayerCount + "個玩家準備完成");
     }
 
+    public void GameLobbyToGame()
+    {
+        InTheRoomPanel.SetActive(false);
+        JoystickUI.SetActive(true);
+        GamePanel.SetActive(true);
+    }
 
 
-[PunRPC]
+    public void GameToGameOver()
+    {
+        JoystickUI.SetActive(false);
+        GamePanel.SetActive(false);
+    }
+
+
+
+
+    [PunRPC]
     void STARTGAME()
     {
         InTheRoomPanel.SetActive(false);
         JoystickUI.SetActive(true);
-        
-        GameObject MyCharacter = PhotonNetwork.Instantiate(this.playerPrefabName, transform.position, Quaternion.identity, 0);
+        //GamePanel.SetActive(true);
+        GameObject MyCharacter = PhotonNetwork.Instantiate(this.playerPrefabName, StartPos[InTheRoomManager.Team].position, Quaternion.identity, 0);
         MyCharacter.GetComponent<PlayerAbilityValue>().PLAYER_NAME = PhotonNetwork.player.NickName;
         MyCharacter.GetComponent<PlayerAbilityValue>().TEAM = InTheRoomManager.Team;
         MyCharacter.GetComponent<PlayerAbilityValue>().SKILL = InTheRoomManager.SkillNumber;

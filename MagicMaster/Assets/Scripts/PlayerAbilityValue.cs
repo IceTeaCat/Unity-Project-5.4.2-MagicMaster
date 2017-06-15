@@ -28,6 +28,13 @@ public class PlayerAbilityValue : Photon.MonoBehaviour
     [Tooltip("是否死亡")]
     public bool IsDestroy = false;
 
+    [Tooltip("殺敵數")]
+    public int KILL = 0;
+
+    [Tooltip("存活時間")]
+    public float LIFETIME = 0;
+
+
     void Start()
     {
         PLAYER_NAME = GetComponent<PhotonView>().owner.NickName;
@@ -41,9 +48,10 @@ public class PlayerAbilityValue : Photon.MonoBehaviour
             {
                 IsDestroy = true;
 
-                transform.GetChild(0).gameObject.SetActive(false);
+                //transform.GetChild(0).gameObject.SetActive(false);
                 transform.GetChild(1).gameObject.SetActive(false);
-                transform.GetChild(2).gameObject.SetActive(false);
+                //transform.GetChild(2).gameObject.SetActive(false);
+                transform.GetChild(3).gameObject.SetActive(false);
                 GetComponent<PlayerController>().enabled = false;
                 GetComponent<PlayerSkill>().enabled = false;
                 //PhotonNetwork.Destroy(gameObject);
@@ -92,8 +100,18 @@ public class PlayerAbilityValue : Photon.MonoBehaviour
     [PunRPC]
     void SetDamage(int Power)
     {
-        if (HEALTH >= 0)
+        if (HEALTH > 0)
+        {
             HEALTH -= Power;
+            /*
+            if(HEALTH<=0)
+            {
+                print(PhotonView.Find(fromWho_ID).GetComponent<PlayerAbilityValue>().PLAYER_NAME + "擊殺了" + PLAYER_NAME);
+                PhotonView.Find(fromWho_ID).GetComponent<PlayerAbilityValue>().KILL += 1;
+
+            }
+            */
+        }
 
         print("受到攻擊");
     }

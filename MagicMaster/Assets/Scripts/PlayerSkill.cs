@@ -4,12 +4,19 @@ using CnControls;
 
 public class PlayerSkill : Photon.MonoBehaviour
 {
+    public GameObject R_Joystick;
+
     Vector3 R_inputVector;
     Vector3 R_movementVector;
 
     PlayerAbilityValue _pav;
+    Animator _anim;
+
+    public GameObject PlayerCharacter;
 
     public bool CanFire = true;
+    public bool Fireing = false;
+    public float CDtime=0;
 
     public GameObject playerSkill;
     public GameObject Skill_Img_Arrow;
@@ -21,22 +28,25 @@ public class PlayerSkill : Photon.MonoBehaviour
     public bool SkillStandBy = false;
     public bool SkillFire = false;
 
+    float FireDelay = 0.05f;
+
     void Start()
     {
         _pav = GetComponent<PlayerAbilityValue>();
-
+        _anim = transform.GetChild(1).GetChild(0).GetComponent<Animator>();
+        
         if (_pav.SKILL == 2 && _pav.ADVANCED_SKILL == 3)
         {
             GameObject GR = PhotonNetwork.Instantiate("GlacierRange", transform.position, Quaternion.identity, 0);
-            //photonView.RPC("SetGRParent", PhotonTargets.All, new object[] { GR.GetComponent<PhotonView>().viewID, GetComponent<PhotonView>().viewID });
-            
+            photonView.RPC("SetGRParent", PhotonTargets.AllBuffered, new object[] { GR.GetComponent<PhotonView>().viewID, GetComponent<PhotonView>().viewID });
+
             //GR.transform.parent = gameObject.transform;
         }
 
         if (_pav.SKILL == 3 && _pav.ADVANCED_SKILL == 3)
         {
             GameObject EIR = PhotonNetwork.Instantiate("ElectricIncreaseRange", transform.position, Quaternion.identity, 0);
-            //photonView.RPC("SetEIRParent", PhotonTargets.All, new object[] { GR.GetComponent<PhotonView>().viewID, GetComponent<PhotonView>().viewID });
+            photonView.RPC("SetEIRParent", PhotonTargets.AllBuffered, new object[] { EIR.GetComponent<PhotonView>().viewID, GetComponent<PhotonView>().viewID });
 
             //EIR.transform.parent = gameObject.transform;
             //EIR.GetComponent<ElectricIncreaseRange>().Team = _pav.TEAM;
@@ -55,9 +65,16 @@ public class PlayerSkill : Photon.MonoBehaviour
             Skill_Function(_pav.SKILL, _pav.ADVANCED_SKILL);
         }
 
+        if (_anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
+            Fireing = true;
+        else
+            Fireing = false;
 
 
-
+        if (Fireing)
+            FireDelay -= Time.deltaTime;
+        else
+            FireDelay = 0.05f;
 
     }
 
@@ -100,8 +117,10 @@ public class PlayerSkill : Photon.MonoBehaviour
                     if (R_inputVector.sqrMagnitude > 0.001f)
                     {
                         R_movementVector = Camera.main.transform.TransformDirection(R_inputVector);
-                        R_movementVector.y = 0f;
+                        R_movementVector.y = 0f;                     
                         Skill_Img_DamageCircle.transform.localPosition = new Vector3(R_movementVector.x * 9, 0, R_movementVector.z * 9 * 10 / 8);
+                        //R_movementVector.Normalize();
+                        //playerSkill.transform.forward = R_movementVector;
                     }
 
 
@@ -129,55 +148,58 @@ public class PlayerSkill : Photon.MonoBehaviour
                     //施放技能 
                     if (SkillFire)
                     {
-                        GameObject fireball = PhotonNetwork.Instantiate("FireBall_small", Skill_Img_Arrow.transform.position, Quaternion.identity, 0) as GameObject;
-                        fireball.GetComponent<FireBall>().Team = _pav.TEAM;
-
-                        fireball.transform.forward = -playerSkill.transform.forward;
-                        playerSkill.transform.rotation = Quaternion.identity;
-                        SkillFire = false;
-                        SkillStandBy = false;
-                        Skill_Img_Arrow.transform.gameObject.SetActive(false);
-
-
-                        //附加進階技能
-                        switch (a)
+                        Fireing = true;
+                        PlayerCharacter.transform.forward = playerSkill.transform.forward;
+                        if (FireDelay <= 0)
                         {
-                            case 0:
-                                {
+                            GameObject fireball = PhotonNetwork.Instantiate("FireBall_small", Skill_Img_Arrow.transform.position, Quaternion.identity, 0) as GameObject;
+                            GetComponent<PhotonView>().RPC("Init_Fireball", PhotonTargets.All, fireball.GetComponent<PhotonView>().viewID);
 
-                                }
-                                break;
+                            fireball.transform.forward = -playerSkill.transform.forward;
+                            playerSkill.transform.rotation = Quaternion.identity;
+                            SkillFire = false;
+                            SkillStandBy = false;
+              
 
-                            case 1:
-                                {
-                                    //燃燒
-                                    GetComponent<PhotonView>().RPC("AddCombustion", PhotonTargets.All, fireball.GetComponent<PhotonView>().viewID);
-                                    
+                            //附加進階技能
+                            switch (a)
+                            {
+                                case 0:
+                                    {
+
+                                    }
+                                    break;
+
+                                case 1:
+                                    {
+                                        //燃燒
+                                        GetComponent<PhotonView>().RPC("AddCombustion", PhotonTargets.All, fireball.GetComponent<PhotonView>().viewID);
 
 
-                                }
-                                break;
 
-                            case 2:
-                                {
-                                    //融合
-                                    GetComponent<PhotonView>().RPC("AddFusion", PhotonTargets.All, fireball.GetComponent<PhotonView>().viewID);
+                                    }
+                                    break;
+
+                                case 2:
+                                    {
+                                        //融合
+                                        GetComponent<PhotonView>().RPC("AddFusion", PhotonTargets.All, fireball.GetComponent<PhotonView>().viewID);
 
 
-                                }
-                                break;
+                                    }
+                                    break;
 
-                            case 3:
-                                {
-                                    //濺散
-                                    GetComponent<PhotonView>().RPC("AddSpatter", PhotonTargets.All, fireball.GetComponent<PhotonView>().viewID);
+                                case 3:
+                                    {
+                                        //濺散
+                                        GetComponent<PhotonView>().RPC("AddSpatter", PhotonTargets.All, fireball.GetComponent<PhotonView>().viewID);
 
-                                }
-                                break;
+                                    }
+                                    break;
+                            }
                         }
+                        Skill_Img_Arrow.transform.gameObject.SetActive(false);
                     }
-
-
                 }
                 break;
 
@@ -193,53 +215,56 @@ public class PlayerSkill : Photon.MonoBehaviour
                     //施放技能 
                     if (SkillFire)
                     {
-                      
-                        for (int i = 0; i < 3; i++)
+                        Fireing = true;
+                        PlayerCharacter.transform.forward = playerSkill.transform.forward;
+                        if (FireDelay <= 0)
                         {
-                            GameObject ice = PhotonNetwork.Instantiate("Ice", Skill_Img_Arrow.transform.position, Quaternion.identity, 0) as GameObject;
-                            ice.GetComponent<Ice>().Team = GetComponent<PlayerAbilityValue>().TEAM;
-                            ice.transform.forward = -playerSkill.transform.forward;
-                            
-                            ice.transform.Rotate(0, (i - 1) * 15, 0);
-
-                            //附加進階技能
-                            switch (a)
+                            for (int i = 0; i < 3; i++)
                             {
-                                case 0:
-                                    {
+                                GameObject ice = PhotonNetwork.Instantiate("Ice", Skill_Img_Arrow.transform.position, Quaternion.identity, 0) as GameObject;
+                                GetComponent<PhotonView>().RPC("Init_Ice", PhotonTargets.All, ice.GetComponent<PhotonView>().viewID);
+                                ice.transform.forward = -playerSkill.transform.forward;
+                                ice.transform.Rotate(0, (i - 1) * 15, 0);
 
-                                    }
-                                    break;
+                                //附加進階技能
+                                switch (a)
+                                {
+                                    case 0:
+                                        {
 
-                                case 1:
-                                    {
-                                        //結凍
-                                        GetComponent<PhotonView>().RPC("AddFrozen", PhotonTargets.All, ice.GetComponent<PhotonView>().viewID);
-                                    }
-                                    break;
+                                        }
+                                        break;
 
-                                case 2:
-                                    {
-                                        //寒風
-                                        GetComponent<PhotonView>().RPC("AddChill", PhotonTargets.All, ice.GetComponent<PhotonView>().viewID);
-                                    }
-                                    break;
+                                    case 1:
+                                        {
+                                            //結凍
+                                            GetComponent<PhotonView>().RPC("AddFrozen", PhotonTargets.All, ice.GetComponent<PhotonView>().viewID);
+                                        }
+                                        break;
 
-                                case 3:
-                                    {
-                                        //刺骨
-                                        GetComponent<PhotonView>().RPC("AddGlacier", PhotonTargets.All, ice.GetComponent<PhotonView>().viewID);
-                                    }
-                                    break;
+                                    case 2:
+                                        {
+                                            //寒風
+                                            GetComponent<PhotonView>().RPC("AddChill", PhotonTargets.All, ice.GetComponent<PhotonView>().viewID);
+                                        }
+                                        break;
+
+                                    case 3:
+                                        {
+                                            //刺骨
+                                            GetComponent<PhotonView>().RPC("AddGlacier", PhotonTargets.All, ice.GetComponent<PhotonView>().viewID);
+                                        }
+                                        break;
+                                }
+
                             }
-
+                            playerSkill.transform.rotation = Quaternion.identity;
+                            SkillFire = false;
+                            SkillStandBy = false;
+                            
                         }
-                        playerSkill.transform.rotation = Quaternion.identity;
-                        SkillFire = false;
-                        SkillStandBy = false;
                         Skill_Img_Arrow.transform.gameObject.SetActive(false);
                     }
-
 
                 }
                 break;
@@ -257,55 +282,59 @@ public class PlayerSkill : Photon.MonoBehaviour
                     //施放技能 
                     if (SkillFire)
                     {
-                        GameObject sr = PhotonNetwork.Instantiate("ElectricLockRange", Skill_Img_DamageCircle.transform.position, Quaternion.identity, 0);
-                        GetComponent<PhotonView>().RPC("CreateSR", PhotonTargets.All, sr.GetComponent<PhotonView>().viewID);
-                        /*
-                        GameObject sr = Instantiate(Resources.Load("ElectricLockRange"), Skill_Img_DamageCircle.transform.position, Quaternion.identity) as GameObject;
-                        sr.GetComponent<ElectricLockRange>().PlayerOrEnemy = _pav.gameObject;
-                        sr.GetComponent<ElectricLockRange>().Player = _pav.gameObject;
-                        sr.GetComponent<ElectricLockRange>().Team = _pav.TEAM;
-                        */
-                        //附加進階技能
-                        switch (a)
+                        Fireing = true;
+                        PlayerCharacter.transform.LookAt(Skill_Img_DamageCircle.transform);
+                        PlayerCharacter.transform.rotation = Quaternion.Euler(0, PlayerCharacter.transform.rotation.eulerAngles.y, 0);
+                        //PlayerCharacter.transform.forward = playerSkill.transform.forward;
+                        if (FireDelay <= 0)
                         {
-                            case 0:
-                                {
+                            GameObject sr = PhotonNetwork.Instantiate("ElectricLockRange", Skill_Img_DamageCircle.transform.position, Quaternion.identity, 0);
+                            GetComponent<PhotonView>().RPC("CreateSR", PhotonTargets.All, sr.GetComponent<PhotonView>().viewID);
 
-                                }
-                                break;
+                            //附加進階技能
+                            switch (a)
+                            {
+                                case 0:
+                                    {
 
-                            case 1:
-                                {
-                                    //多重
-                                    GetComponent<PhotonView>().RPC("AddElectricMultiple", PhotonTargets.All, sr.GetComponent<PhotonView>().viewID);
-                                }
-                                break;
+                                    }
+                                    break;
 
-                            case 2:
-                                {
-                                    //連鎖
-                                    GetComponent<PhotonView>().RPC("AddElectricChain", PhotonTargets.All, sr.GetComponent<PhotonView>().viewID);
-                                    /*
-                                    sr.AddComponent<ElectricChain>();
-                                    sr.GetComponent<ElectricChain>().Team = _pav.TEAM;
-                                    sr.GetComponent<ElectricChain>().Player = _pav.gameObject;
-                                    */
-                                }
-                                break;
+                                case 1:
+                                    {
+                                        //多重
+                                        GetComponent<PhotonView>().RPC("AddElectricMultiple", PhotonTargets.All, sr.GetComponent<PhotonView>().viewID);
+                                    }
+                                    break;
 
-                            case 3:
-                                {
-                                    //增幅
-                                    //sr.AddComponent<>();
-                                }
-                                break;
+                                case 2:
+                                    {
+                                        //連鎖
+                                        GetComponent<PhotonView>().RPC("AddElectricChain", PhotonTargets.All, sr.GetComponent<PhotonView>().viewID);
+                                        /*
+                                        sr.AddComponent<ElectricChain>();
+                                        sr.GetComponent<ElectricChain>().Team = _pav.TEAM;
+                                        sr.GetComponent<ElectricChain>().Player = _pav.gameObject;
+                                        */
+                                    }
+                                    break;
+
+                                case 3:
+                                    {
+                                        //增幅
+                                        //sr.AddComponent<>();
+                                    }
+                                    break;
+                            }
+
+                            Skill_Img_DamageCircle.transform.localPosition = new Vector3(0, -0.4f, 0);
+                            //playerSkill.transform.rotation = Quaternion.identity;
+                            SkillFire = false;
+                            SkillStandBy = false;
                         }
-
-                        Skill_Img_DamageCircle.transform.localPosition = new Vector3(0, -0.4f, 0);
+  
                         Skill_Img_DamageCircle.SetActive(false);
                         Skill_Img_RangeCircle.transform.gameObject.SetActive(false);
-                        SkillFire = false;
-                        SkillStandBy = false;
                     }
                 }
                 break;
@@ -342,6 +371,8 @@ public class PlayerSkill : Photon.MonoBehaviour
     void AddCombustion(int fireball_ID)
     {
         PhotonView.Find(fireball_ID).gameObject.AddComponent<Combustion>();
+        PhotonView.Find(fireball_ID).gameObject.GetComponent<Combustion>().Host=gameObject;
+        PhotonView.Find(fireball_ID).gameObject.GetComponent<Combustion>().Team = _pav.TEAM;
     }
 
     [PunRPC]
@@ -410,6 +441,22 @@ public class PlayerSkill : Photon.MonoBehaviour
         //PhotonView.Find(ice_ID).gameObject.AddComponent<>();
     }
 
+
+    //---初始化火球---
+    [PunRPC]
+    void Init_Fireball(int Fireball_ID)
+    {
+        PhotonView.Find(Fireball_ID).GetComponent<FireBall>().Host = gameObject;
+        PhotonView.Find(Fireball_ID).GetComponent<FireBall>().Team = _pav.TEAM;
+    }
+
+    //---初始化冰---
+    [PunRPC]
+    void Init_Ice(int Ice_ID)
+    {
+        PhotonView.Find(Ice_ID).GetComponent<Ice>().Host = gameObject;
+        PhotonView.Find(Ice_ID).GetComponent<Ice>().Team = _pav.TEAM;
+    }
 
 
 }

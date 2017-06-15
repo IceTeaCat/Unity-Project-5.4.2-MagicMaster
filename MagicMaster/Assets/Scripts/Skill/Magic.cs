@@ -62,6 +62,7 @@ public class Magic : Photon.MonoBehaviour {
 
     #region 功能區
 
+
     //生成擊中特效
     [PunRPC]
     public void HitFX_Function(int Number, Vector3 TargetPos)

@@ -50,7 +50,7 @@ public class FireBall : Magic
                     if (TargetPlayer_Data.TEAM != Team)
                     {
                         photonView.RPC("HitFX_Function", PhotonTargets.All, new object[] { 0, transform.position });
-                        other.gameObject.transform.parent.gameObject.GetPhotonView().RPC("SetDamage", PhotonTargets.All, Power);
+                        other.gameObject.transform.parent.gameObject.GetPhotonView().RPC("SetDamage", PhotonTargets.All,  Power );
                         IsDestroy = true;
                         PhotonNetwork.Destroy(gameObject);
                     }
@@ -66,13 +66,13 @@ public class FireBall : Magic
         {
             stream.SendNext(transform.position);
             stream.SendNext(transform.rotation);
-            stream.SendNext(Team);
+            //stream.SendNext(Team);
         }
         else
         {
             correctFireBallPos = (Vector3)stream.ReceiveNext();
             correctFireBallRot = (Quaternion)stream.ReceiveNext();
-            Team = (int)stream.ReceiveNext();
+            //Team = (int)stream.ReceiveNext();
 
             if (!appliedInitialUpdate)
             {

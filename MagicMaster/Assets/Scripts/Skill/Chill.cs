@@ -9,7 +9,7 @@ public class Chill : Photon.MonoBehaviour {
         if (photonView.isMine)
         {
             GameObject CSR = PhotonNetwork.Instantiate("ChillSlowRange", transform.position, Quaternion.identity, 0);
-            photonView.RPC("SetCSRParent", PhotonTargets.All, CSR.GetComponent<PhotonView>().viewID, gameObject.GetComponent<PhotonView>().viewID);
+            photonView.RPC("SetCSRParent", PhotonTargets.AllBuffered, CSR.GetComponent<PhotonView>().viewID, gameObject.GetComponent<PhotonView>().viewID);
             //CSR.transform.parent = gameObject.transform;
         }
     }

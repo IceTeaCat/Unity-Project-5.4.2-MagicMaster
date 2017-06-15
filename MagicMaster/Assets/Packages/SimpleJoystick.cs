@@ -100,8 +100,10 @@ namespace CnControls
         protected VirtualAxis HorizintalAxis;
         protected VirtualAxis VerticalAxis;
 
+        Animator _anim;
         private void Awake()
         {
+ 
             _stickTransform = Stick.GetComponent<RectTransform>();
             _baseTransform = JoystickBase.GetComponent<RectTransform>();
 
@@ -118,6 +120,12 @@ namespace CnControls
             {
                 Hide(true);
             }
+        }
+
+        private void Start()
+        {
+            _anim = Player.transform.GetChild(1).GetChild(0).GetComponent<Animator>();
+
         }
 
         private void OnEnable()
@@ -227,7 +235,17 @@ namespace CnControls
 			if (Stick.tag == "R_Stick") {
 				//print ("放開");
                 Player.GetComponent<PlayerSkill>().SkillFire = true;
-			}
+
+                _anim.SetTrigger("Fire");
+
+            }
+
+            if (Stick.tag == "L_Stick")
+            {
+                //print ("放開");
+                Player.GetComponent<PlayerController>().isDown = false;
+            }
+
         }
 
         public void OnPointerDown(PointerEventData eventData)
@@ -262,6 +280,12 @@ namespace CnControls
 				//print ("按下");
                 Player.GetComponent<PlayerSkill>().SkillStandBy = true;
 			}
+
+            if (Stick.tag == "L_Stick")
+            {
+                //print ("放開");
+                Player.GetComponent<PlayerController>().isDown = true;
+            }
 
         }
 

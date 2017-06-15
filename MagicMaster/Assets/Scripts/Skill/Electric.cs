@@ -35,7 +35,7 @@ public class Electric : Photon.MonoBehaviour {
             LR.SetWidth(2, 2);
             //Destroy(gameObject, DieTime);
 
-            Target.GetComponent<PhotonView>().RPC("SetDamage", PhotonTargets.All, Damage);
+            Target.GetComponent<PhotonView>().RPC("SetDamage", PhotonTargets.All,Damage );
         }
     }
 

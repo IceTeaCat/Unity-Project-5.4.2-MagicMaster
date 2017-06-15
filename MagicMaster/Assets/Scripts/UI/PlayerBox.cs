@@ -35,6 +35,7 @@ public class PlayerBox : Photon.MonoBehaviour
         if (photonView.isMine)
         {
             GetComponent<PhotonView>().RPC("InitPlayerData", PhotonTargets.All, PhotonNetwork.player.NickName);
+            GetComponent<PhotonView>().RPC("ChangeTeamRPC", PhotonTargets.AllBufferedViaServer, tempTeam);
         }
     }
 
@@ -104,6 +105,7 @@ public class PlayerBox : Photon.MonoBehaviour
         if (team == 0)
         {
             transform.SetParent(GameObject.Find("Red_PlayerSlot").transform);
+            transform.localScale = new Vector3(1, 1, 1);
             gameObject.GetComponent<Image>().sprite = RedTeamPic;
         }
         else if (team == 1)

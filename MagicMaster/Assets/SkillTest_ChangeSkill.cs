@@ -75,7 +75,7 @@ public class SkillTest_ChangeSkill : Photon.MonoBehaviour {
 
 
             GameObject GR = PhotonNetwork.Instantiate("GlacierRange", transform.position, Quaternion.identity, 0);
-            photonView.RPC("SetGRParent", PhotonTargets.All, new object[] { GR.GetComponent<PhotonView>().viewID, GetComponent<PhotonView>().viewID });
+            photonView.RPC("SetGRParent", PhotonTargets.AllBuffered, new object[] { GR.GetComponent<PhotonView>().viewID, GetComponent<PhotonView>().viewID });
 
 
         }
@@ -108,7 +108,7 @@ public class SkillTest_ChangeSkill : Photon.MonoBehaviour {
             gameObject.GetComponent<PlayerAbilityValue>().ADVANCED_SKILL = 3;
 
             GameObject EIR = PhotonNetwork.Instantiate("ElectricIncreaseRange", transform.position, Quaternion.identity, 0);
-            photonView.RPC("SetEIRParent", PhotonTargets.All, new object[] { EIR.GetComponent<PhotonView>().viewID, GetComponent<PhotonView>().viewID });
+            photonView.RPC("SetEIRParent", PhotonTargets.AllBuffered, new object[] { EIR.GetComponent<PhotonView>().viewID, GetComponent<PhotonView>().viewID });
 
         }
 

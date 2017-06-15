@@ -9,7 +9,7 @@ public class CombustionDamage : Magic
         {
             if (!IsDestroy)
             {
-                Target.gameObject.GetPhotonView().RPC("SetDamage", PhotonTargets.All, Power);
+                Target.gameObject.GetPhotonView().RPC("SetDamage", PhotonTargets.All, Power );
                 LifeTime -= Time.deltaTime;
                 if (LifeTime <= 0)
                 {
