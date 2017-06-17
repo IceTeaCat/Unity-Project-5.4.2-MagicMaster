@@ -28,6 +28,7 @@ public class MainMenu : Photon.MonoBehaviour
 
     string playerPrefabName = "NewPlayer";
 
+    public GM  _GM;
 
     //動作
     Animation anim;
@@ -220,9 +221,15 @@ public class MainMenu : Photon.MonoBehaviour
     [PunRPC]
     void STARTGAME()
     {
+        _GM.GAMESTART = true;
+        _GM.BLUEPLAYERCOUNT = GameObject.Find("Blue_PlayerSlot").transform.childCount;
+        _GM.REDPLAYERCOUNT = GameObject.Find("Red_PlayerSlot").transform.childCount;
+        _GM.ALLPLAYERCOUNT = _GM.BLUEPLAYERCOUNT + _GM.REDPLAYERCOUNT;
+
         InTheRoomPanel.SetActive(false);
         JoystickUI.SetActive(true);
-        //GamePanel.SetActive(true);
+        GamePanel.SetActive(true);
+
         GameObject MyCharacter = PhotonNetwork.Instantiate(this.playerPrefabName, StartPos[InTheRoomManager.Team].position, Quaternion.identity, 0);
         MyCharacter.GetComponent<PlayerAbilityValue>().PLAYER_NAME = PhotonNetwork.player.NickName;
         MyCharacter.GetComponent<PlayerAbilityValue>().TEAM = InTheRoomManager.Team;
@@ -231,6 +238,8 @@ public class MainMenu : Photon.MonoBehaviour
 
         JoystickUI.transform.GetChild(0).GetComponent<CnControls.SimpleJoystick>().Player = MyCharacter;
         JoystickUI.transform.GetChild(1).GetComponent<CnControls.SimpleJoystick>().Player = MyCharacter;
+
+
     }
 
 }

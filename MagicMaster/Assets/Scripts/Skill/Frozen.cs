@@ -17,27 +17,21 @@ public class Frozen : Photon.MonoBehaviour {
                 if (TargetPlayer_Data.TEAM != gameObject.GetComponent<Ice>().Team)
                 {
                     //未標記就標記
-                    if (TargetPlayer_Data.gameObject.GetComponent<FrozenMark>() == null)
+                    if (TargetPlayer_Data.gameObject.GetComponent<FrozenMark>() == null && TargetPlayer_Data.gameObject.GetComponent<FrozenDamage>() == null)
                     {
 
                         FME = PhotonNetwork.Instantiate("FrozenMarkEffect", transform.position, Quaternion.identity, 0);
                         photonView.RPC("AddFrozenMark", PhotonTargets.All,new object[] { TargetPlayer_Data.gameObject.GetComponent<PhotonView>().viewID, FME.GetComponent<PhotonView>().viewID });
                         //TargetPlayer_Data.gameObject.AddComponent<FrozenMark>();
                     }
-                    else
+                    else if(TargetPlayer_Data.gameObject.GetComponent<FrozenMark>() != null && TargetPlayer_Data.gameObject.GetComponent<FrozenDamage>() == null)
                     {
                         photonView.RPC("RemoveFrozenMark", PhotonTargets.All, TargetPlayer_Data.gameObject.GetComponent<PhotonView>().viewID);
                         photonView.RPC("AddFrozenDamage", PhotonTargets.All, TargetPlayer_Data.gameObject.GetComponent<PhotonView>().viewID);
 
-                        /*
-                        Destroy(TargetPlayer_Data.gameObject.GetComponent<FrozenMark>().FME);
-                        Destroy(TargetPlayer_Data.gameObject.GetComponent<FrozenMark>());
-                        TargetPlayer_Data.gameObject.AddComponent<FrozenDamage>();
-                        */
-
                         //結凍特效
                         GameObject FE = PhotonNetwork.Instantiate("FireBall_Explode", transform.position, Quaternion.identity, 0);
-                        //Destroy(FE, TargetPlayer_Data.GetComponent<FrozenDamage>().EndTime);
+                        FE.transform.localScale = new Vector3(5, 5, 5);
                     }
 
                 }

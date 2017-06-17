@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ChillSlowRange : MonoBehaviour {
+public class ChillSlowRange : Photon.MonoBehaviour {
 
     void OnTriggerEnter(Collider other)
     {
@@ -14,11 +14,21 @@ public class ChillSlowRange : MonoBehaviour {
             {
                 if (TargetPlayer_Data.gameObject.GetComponent<ChillSlowEffect>() == null)
                 {
+                    //photonView.RPC("AddChillSlowEffect", PhotonTargets.AllBufferedViaServer, TargetPlayer_Data.gameObject.GetComponent<PhotonView>().viewID);
                     TargetPlayer_Data.gameObject.AddComponent<ChillSlowEffect>();
+
                 }
             }
         }
     }
 
+
+    [PunRPC]
+    void AddChillSlowEffect(int Target_ID)
+    {
+
+        PhotonView.Find(Target_ID).gameObject.AddComponent<ChillSlowEffect>();
+
+    }
 
 }

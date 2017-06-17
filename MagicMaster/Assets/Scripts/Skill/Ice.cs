@@ -45,6 +45,7 @@ public class Ice : Magic {
         {
             if (!IsDestroy)
             {
+
                 //打到牆壁or障礙物
                 if (other.gameObject.tag == "Wall")
                 {
@@ -64,48 +65,22 @@ public class Ice : Magic {
                         other.gameObject.transform.parent.gameObject.GetPhotonView().RPC("SetDamage", PhotonTargets.All, Power);
                         IsDestroy = true;
                         PhotonNetwork.Destroy(gameObject);
+
+                        //如果有冰凍標記
+                        if (TargetPlayer_Data.gameObject.GetComponent<FrozenMark>() != null && TargetPlayer_Data.gameObject.GetComponent<FrozenDamage>() == null && GetComponent<Frozen>() == null)
+                        {
+                            photonView.RPC("RemoveFrozenMark2", PhotonTargets.All, TargetPlayer_Data.gameObject.GetComponent<PhotonView>().viewID);
+                            photonView.RPC("AddFrozenDamage2", PhotonTargets.All, TargetPlayer_Data.gameObject.GetComponent<PhotonView>().viewID);
+
+                            //結凍特效
+                            GameObject FE = PhotonNetwork.Instantiate("FireBall_Explode", transform.position, Quaternion.identity, 0);
+                            FE.transform.localScale = new Vector3(5, 5, 5);
+                        }
                     }
                 }
+
             }
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        /*
-        if (other.gameObject.tag == "Wall")
-        {
-            Destroy(gameObject);
-            //PhotonNetwork.Instantiate("Explode_big", transform.position, Quaternion.identity, 0);
-        }
-
-        //打到玩家
-        if (other.gameObject.tag == "Player")
-        {
-            PlayerAbilityValue TargetPlayer_Data = other.transform.parent.GetComponent<PlayerAbilityValue>();
-            //打到敵方
-            if (TargetPlayer_Data.TEAM != Team)
-            {
-                //PhotonNetwork.Instantiate("Explode_big", transform.position, Quaternion.identity, 0);
-                TargetPlayer_Data.HEALTH -= Power;
-                Destroy(gameObject);
-            }
-        }
-        */
-
-
 
     }
 
@@ -136,5 +111,19 @@ public class Ice : Magic {
 
     }
 
+
+
+    [PunRPC]
+    void RemoveFrozenMark2(int Target_ID)
+    {
+        Destroy(PhotonView.Find(Target_ID).gameObject.GetComponent<FrozenMark>().FME);
+        Destroy(PhotonView.Find(Target_ID).gameObject.GetComponent<FrozenMark>());
+    }
+
+    [PunRPC]
+    void AddFrozenDamage2(int Target_ID)
+    {
+        PhotonView.Find(Target_ID).gameObject.AddComponent<FrozenDamage>();
+    }
 
 }

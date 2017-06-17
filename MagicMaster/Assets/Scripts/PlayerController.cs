@@ -5,7 +5,7 @@ using CnControls;
 public class PlayerController : Photon.MonoBehaviour {
 
     PlayerAbilityValue _pav;
-    Animator _anim;
+    public Animator _anim;
 
 	public GameObject PlayerCharacter;
 	CharacterController _characterController;

@@ -26,7 +26,7 @@ public class Electric : Photon.MonoBehaviour {
      float DieTime=1.0f;
 
     float MatOffset = 0;
-    float MatOffsetSpeed = 8;
+    float MatOffsetSpeed = 6;
 
     void Start () {
         if (photonView.isMine)

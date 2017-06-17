@@ -8,7 +8,7 @@ public class PlayerName : MonoBehaviour {
 
     private void Start()
     {
-        nameTag.text = PhotonNetwork.playerName;
+        nameTag.text = GetComponent<PlayerAbilityValue>().PLAYER_NAME;
     }
 
 

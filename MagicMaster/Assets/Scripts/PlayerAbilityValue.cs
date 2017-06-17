@@ -17,13 +17,13 @@ public class PlayerAbilityValue : Photon.MonoBehaviour
     [Tooltip("進階技能")]
     public int ADVANCED_SKILL = 0;
 
-    public float SKILL_CD=0;
+    public float SKILL_CD = 0;
 
     [Tooltip("移動速度")]
-    public float MOVE_SPEED=5;
+    public float MOVE_SPEED = 5;
 
     [Tooltip("血量")]
-    public int HEALTH =5000;
+    public int HEALTH = 5000;
 
     [Tooltip("是否死亡")]
     public bool IsDestroy = false;
@@ -49,12 +49,19 @@ public class PlayerAbilityValue : Photon.MonoBehaviour
                 IsDestroy = true;
 
                 //transform.GetChild(0).gameObject.SetActive(false);
-                transform.GetChild(1).gameObject.SetActive(false);
+                //transform.GetChild(1).gameObject.SetActive(false);
                 //transform.GetChild(2).gameObject.SetActive(false);
-                transform.GetChild(3).gameObject.SetActive(false);
+                //transform.GetChild(3).gameObject.SetActive(false);
+
+                GetComponent<PlayerController>()._anim.SetBool("Die", true);
                 GetComponent<PlayerController>().enabled = false;
                 GetComponent<PlayerSkill>().enabled = false;
+
                 //PhotonNetwork.Destroy(gameObject);
+                
+                if (photonView.isMine)
+                    photonView.RPC("SetDie", PhotonTargets.All);
+                
             }
     }
 
@@ -104,19 +111,28 @@ public class PlayerAbilityValue : Photon.MonoBehaviour
         {
             HEALTH -= Power;
             /*
-            if(HEALTH<=0)
-            {
-                print(PhotonView.Find(fromWho_ID).GetComponent<PlayerAbilityValue>().PLAYER_NAME + "擊殺了" + PLAYER_NAME);
-                PhotonView.Find(fromWho_ID).GetComponent<PlayerAbilityValue>().KILL += 1;
-
-            }
+            if (GetComponent<PlayerController>()._anim.GetFloat("Speed") == 0)
+                GetComponent<PlayerController>()._anim.SetTrigger("beHit");
             */
         }
 
-        print("受到攻擊");
+            print("受到攻擊");
     }
 
+    //死亡
+    [PunRPC]
+    void SetDie()
+    {
+        if (HEALTH <= 0)
+        {
+            if (TEAM == 0)
+                GameObject.Find("Code").GetComponent<GM>().REDPLAYERCOUNT -= 1;
+            if (TEAM == 1)
+                GameObject.Find("Code").GetComponent<GM>().BLUEPLAYERCOUNT -= 1;
+            print("123");
+        }
 
 
+    }
 
 }

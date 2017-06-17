@@ -34,7 +34,7 @@ public class PlayerBox : Photon.MonoBehaviour
     {
         if (photonView.isMine)
         {
-            GetComponent<PhotonView>().RPC("InitPlayerData", PhotonTargets.All, PhotonNetwork.player.NickName);
+            GetComponent<PhotonView>().RPC("InitPlayerData", PhotonTargets.AllBufferedViaServer, PhotonNetwork.player.NickName);
             GetComponent<PhotonView>().RPC("ChangeTeamRPC", PhotonTargets.AllBufferedViaServer, tempTeam);
         }
     }

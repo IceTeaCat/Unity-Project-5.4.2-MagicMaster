@@ -15,6 +15,8 @@ public class GM : MonoBehaviour {
 
     //玩家數
     public int ALLPLAYERCOUNT;
+    public int BLUEPLAYERCOUNT;
+    public int REDPLAYERCOUNT;
     public int NOWPLAYERCOUNT;
 
     //獲勝隊伍
@@ -46,9 +48,15 @@ public class GM : MonoBehaviour {
 
     void SetUI()
     {
-        _gametime.text = GAMETIME.ToString();
-        _blueteamkill.text = BLUEKILLCOUNT.ToString();
-        _redteamkill.text = REDKILLCOUNT.ToString();
+        int sec = (int)(GAMETIME % 60);
+        int min = (int)(GAMETIME / 60);
+        string time = min + ":" + sec;
+        _gametime.text = string.Format("{0:00}:{1:00}", min, sec); ;
+
+
+
+        _blueteamkill.text = BLUEPLAYERCOUNT.ToString();
+        _redteamkill.text = REDPLAYERCOUNT.ToString();
     }
 
 

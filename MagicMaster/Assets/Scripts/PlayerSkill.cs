@@ -13,6 +13,7 @@ public class PlayerSkill : Photon.MonoBehaviour
     Animator _anim;
 
     public GameObject PlayerCharacter;
+    public Transform skillPos;
 
     public bool CanFire = true;
     public bool Fireing = false;
@@ -152,7 +153,7 @@ public class PlayerSkill : Photon.MonoBehaviour
                         PlayerCharacter.transform.forward = playerSkill.transform.forward;
                         if (FireDelay <= 0)
                         {
-                            GameObject fireball = PhotonNetwork.Instantiate("FireBall_small", Skill_Img_Arrow.transform.position, Quaternion.identity, 0) as GameObject;
+                            GameObject fireball = PhotonNetwork.Instantiate("FireBall_small", skillPos.position, Quaternion.identity, 0) as GameObject;
                             GetComponent<PhotonView>().RPC("Init_Fireball", PhotonTargets.All, fireball.GetComponent<PhotonView>().viewID);
 
                             fireball.transform.forward = -playerSkill.transform.forward;
@@ -221,7 +222,7 @@ public class PlayerSkill : Photon.MonoBehaviour
                         {
                             for (int i = 0; i < 3; i++)
                             {
-                                GameObject ice = PhotonNetwork.Instantiate("Ice", Skill_Img_Arrow.transform.position, Quaternion.identity, 0) as GameObject;
+                                GameObject ice = PhotonNetwork.Instantiate("Ice", skillPos.position, Quaternion.identity, 0) as GameObject;
                                 GetComponent<PhotonView>().RPC("Init_Ice", PhotonTargets.All, ice.GetComponent<PhotonView>().viewID);
                                 ice.transform.forward = -playerSkill.transform.forward;
                                 ice.transform.Rotate(0, (i - 1) * 15, 0);
