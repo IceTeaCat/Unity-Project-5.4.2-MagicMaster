@@ -122,13 +122,16 @@ public class PlayerBox : Photon.MonoBehaviour
         }
     }
 
+    //1 2 3
+    //1 5 9
 
 
     //更換技能
     [PunRPC]
     void ChangeSkillRPC(int skillnumber)
     {
-        transform.FindChild("Skill_Icon").GetComponent<Image>().sprite = code.GetComponent<SkillList>().All_Skill_Sprite[skillnumber];
+        //transform.FindChild("Skill_Icon").GetComponent<Image>().sprite = code.GetComponent<SkillList>().All_Skill_Sprite[skillnumber];
+        transform.FindChild("Skill_Icon").GetComponent<Image>().sprite = code.GetComponent<SkillList>().All_Skill_Sprite[1+(4*(skillnumber-1))];
     }
 
     [PunRPC]

@@ -177,8 +177,17 @@ public class MainMenu : Photon.MonoBehaviour
     public void CloseSkillPanel(int skillnumber)
     {
         InTheRoomPanel.transform.Find("Room_panel/SkillPanel").gameObject.SetActive(false);
+
+        
         InTheRoomPanel.transform.Find("Room_panel/Skill_Select_btn").GetComponent<Image>().sprite = gameObject.GetComponent<SkillList>().All_Skill_Sprite[skillnumber];
     }
+
+    public void NoChangeCloseSkillPanel()
+    {
+        InTheRoomPanel.transform.Find("Room_panel/SkillPanel").gameObject.SetActive(false);      
+    }
+
+
 
 
     public void BossReadyToStartGame()
@@ -236,7 +245,6 @@ public class MainMenu : Photon.MonoBehaviour
         JoystickUI.transform.GetChild(0).GetComponent<CnControls.SimpleJoystick>().Player = MyCharacter;
         JoystickUI.transform.GetChild(1).GetComponent<CnControls.SimpleJoystick>().Player = MyCharacter;
 
-        InTheRoomManager.removeRoomObj();
     }
 
 }
