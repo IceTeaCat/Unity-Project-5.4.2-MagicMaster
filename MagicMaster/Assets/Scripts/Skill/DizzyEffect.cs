@@ -7,12 +7,19 @@ public class DizzyEffect : MonoBehaviour {
 	
     public float OriginSpeed;
 
-	void Start () {
+    GameObject DE;
+
+    void Start () {
         OriginSpeed = GetComponent<PlayerAbilityValue>().MOVE_SPEED;
         GetComponent<PlayerAbilityValue>().MOVE_SPEED=0;
 
-        //Test
-        //GetComponent<EnemyTest>().enabled = false;
+        GetComponent<PlayerController>().enabled = false;
+        GetComponent<PlayerSkill>().enabled = false;
+
+        if (GetComponent<PhotonView>().isMine)
+            //暈眩特效
+            DE = PhotonNetwork.Instantiate("DizzyEffect", transform.position, Quaternion.Euler(90,0,0), 0);
+        
     }
 	
 	
@@ -20,9 +27,14 @@ public class DizzyEffect : MonoBehaviour {
         DizzyTime -= Time.deltaTime;
         if(DizzyTime<=0)
         {
+            GetComponent<PlayerController>().enabled = true;
+            GetComponent<PlayerSkill>().enabled = true;
+
             GetComponent<PlayerAbilityValue>().MOVE_SPEED = OriginSpeed;
-            //Test
-            //GetComponent<EnemyTest>().enabled = true;
+
+            if (GetComponent<PhotonView>().isMine)
+                PhotonNetwork.Destroy(PhotonView.Find(DE.GetComponent<PhotonView>().viewID));
+            
             Destroy(GetComponent<DizzyEffect>());
         }
 

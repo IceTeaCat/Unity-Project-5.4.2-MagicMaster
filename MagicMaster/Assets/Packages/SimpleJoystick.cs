@@ -232,17 +232,20 @@ namespace CnControls
                 Hide(true);
             }
 
-			if (Stick.tag == "R_Stick") {
-				//print ("放開");
-                Player.GetComponent<PlayerSkill>().SkillFire = true;
+            if (Player.GetComponent<PlayerSkill>().enabled == true)
+            {
+                if (Stick.tag == "R_Stick")
+                {
+                    Player.GetComponent<PlayerSkill>().SkillFire = true;
 
-                _anim.SetTrigger("Fire");
 
+                    if (Player.GetComponent<PlayerSkill>().CanFire)
+                        _anim.SetTrigger("Fire");
+                }
             }
 
             if (Stick.tag == "L_Stick")
             {
-                //print ("放開");
                 Player.GetComponent<PlayerController>().isDown = false;
             }
 

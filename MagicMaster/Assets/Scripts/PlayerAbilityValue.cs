@@ -38,6 +38,12 @@ public class PlayerAbilityValue : Photon.MonoBehaviour
     void Start()
     {
         PLAYER_NAME = GetComponent<PhotonView>().owner.NickName;
+
+        if (photonView.isMine)
+            GM.myTeam = TEAM;
+
+        if (ADVANCED_SKILL != 0)
+            ShopManager.skillopen_btn[(SKILL-1)*4+ADVANCED_SKILL] = false;
     }
 
 
@@ -130,6 +136,9 @@ public class PlayerAbilityValue : Photon.MonoBehaviour
             if (TEAM == 1)
                 GameObject.Find("Code").GetComponent<GM>().BLUEPLAYERCOUNT -= 1;
             print("123");
+
+            SKILL = 1;
+            ADVANCED_SKILL = 0;
         }
 
 

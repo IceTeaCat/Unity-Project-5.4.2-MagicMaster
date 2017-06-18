@@ -43,18 +43,9 @@ public class MainMenu : Photon.MonoBehaviour
     private string roomName = "房間名稱";
     private Vector2 scrollPos = Vector2.zero;
 
-    void Start()
-    {
-
-    }
-
-
-
 
     void Update()
     {
-
-
         if (InTheRoomManager.Boss)
             InTheRoomPanel.transform.FindChild("Room_panel/StartGame_btn").gameObject.SetActive(true);
         else
@@ -215,6 +206,12 @@ public class MainMenu : Photon.MonoBehaviour
         GamePanel.SetActive(false);
     }
 
+    public void GameOverToGameLobby()
+    {
+        _GM.AddMoney();
+        PhotonNetwork.LeaveRoom();
+    }
+
 
 
 
@@ -239,7 +236,7 @@ public class MainMenu : Photon.MonoBehaviour
         JoystickUI.transform.GetChild(0).GetComponent<CnControls.SimpleJoystick>().Player = MyCharacter;
         JoystickUI.transform.GetChild(1).GetComponent<CnControls.SimpleJoystick>().Player = MyCharacter;
 
-
+        InTheRoomManager.removeRoomObj();
     }
 
 }

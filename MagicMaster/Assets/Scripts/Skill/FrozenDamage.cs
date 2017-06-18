@@ -17,6 +17,8 @@ public class FrozenDamage : Photon.MonoBehaviour
         TargetOriginalSpeed = 5;
         TargetPlayer_Data.MOVE_SPEED = 0;
 
+        GetComponent<PlayerController>().enabled = false;
+
     }
 
     void Update()
@@ -24,6 +26,7 @@ public class FrozenDamage : Photon.MonoBehaviour
         EndTime -= Time.deltaTime;
         if (EndTime <= 0)
         {
+            GetComponent<PlayerController>().enabled = true;
             TargetPlayer_Data.MOVE_SPEED = TargetOriginalSpeed;
             Destroy(gameObject.GetComponent<FrozenDamage>());
         }

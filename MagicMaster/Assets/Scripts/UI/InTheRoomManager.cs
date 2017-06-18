@@ -10,13 +10,26 @@ public class InTheRoomManager : Photon.MonoBehaviour
     public static int Team;
     public static int SkillNumber;
     public static int Skill_AdvanceNumber;
-    public static bool Ready=false;
-    public static bool Boss = false;
+    public static bool Ready;
+    public static bool Boss;
 
-    public static int ReadyPlayerCount = 0;
+    public static int ReadyPlayerCount;
 
     //Player_UI
     public string playerPrefabName = "MyPlayerBox";
+    public static GameObject playerbox;
+
+    private void Start()
+    {
+        Ready = false;
+        Boss = false;
+        ReadyPlayerCount = 0;
+        Team = 0;
+        SkillNumber = 0;
+        Skill_AdvanceNumber = 0;
+    }
+
+
 
     void OnJoinedRoom()
     {
@@ -30,14 +43,22 @@ public class InTheRoomManager : Photon.MonoBehaviour
         while (PhotonNetwork.room != null || PhotonNetwork.connected == false)
             yield return 0;
         
-        Application.LoadLevel(Application.loadedLevel);
+        //Application.LoadLevel(0);
+        Application.LoadLevelAsync(0);
 
     }
 
-    void InTheRoom()
+    public void InTheRoom()
     {
-        GameObject playerbox = PhotonNetwork.Instantiate(this.playerPrefabName, transform.position, Quaternion.Euler(0,0,0), 0);
+        playerbox = PhotonNetwork.Instantiate(this.playerPrefabName, transform.position, Quaternion.Euler(0,0,0), 0);
     }
+
+    public static void removeRoomObj()
+    {
+        Destroy(playerbox);
+    }
+
+
     
     private void Update()
     {

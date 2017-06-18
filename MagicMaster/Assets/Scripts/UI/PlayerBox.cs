@@ -32,6 +32,13 @@ public class PlayerBox : Photon.MonoBehaviour
 
     void Start()
     {
+        tempTeam = 0;
+        tempSkillNumber = 0;
+        tempSkillAdvNumber = 0;
+        tempReady = false;
+        tempReadtPlayerCount = 0;
+        transform.FindChild("Skill_Icon").GetComponent<Image>().sprite = DefaultPic;
+
         if (photonView.isMine)
         {
             GetComponent<PhotonView>().RPC("InitPlayerData", PhotonTargets.AllBufferedViaServer, PhotonNetwork.player.NickName);

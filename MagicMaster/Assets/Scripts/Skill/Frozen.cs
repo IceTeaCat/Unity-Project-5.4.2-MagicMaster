@@ -30,8 +30,7 @@ public class Frozen : Photon.MonoBehaviour {
                         photonView.RPC("AddFrozenDamage", PhotonTargets.All, TargetPlayer_Data.gameObject.GetComponent<PhotonView>().viewID);
 
                         //結凍特效
-                        GameObject FE = PhotonNetwork.Instantiate("FireBall_Explode", transform.position, Quaternion.identity, 0);
-                        FE.transform.localScale = new Vector3(5, 5, 5);
+                        GameObject FE = PhotonNetwork.Instantiate("FrozenRockEffect", other.gameObject.transform.position, Quaternion.identity, 0);
                     }
 
                 }

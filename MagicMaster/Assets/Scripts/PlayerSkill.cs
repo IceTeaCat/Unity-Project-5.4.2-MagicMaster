@@ -66,11 +66,11 @@ public class PlayerSkill : Photon.MonoBehaviour
             Skill_Function(_pav.SKILL, _pav.ADVANCED_SKILL);
         }
 
-        if (_anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
-            Fireing = true;
-        else
-            Fireing = false;
-
+            if (_anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
+                Fireing = true;
+            else
+                Fireing = false;
+        
 
         if (Fireing)
             FireDelay -= Time.deltaTime;
