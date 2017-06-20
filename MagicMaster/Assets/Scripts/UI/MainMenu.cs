@@ -19,6 +19,8 @@ public class MainMenu : Photon.MonoBehaviour
     public GameObject GamePanel;
     public GameObject GameOverPanel;
 
+    public GameObject NerfGroup;
+
     public Text CreatePlayerName;
 
 
@@ -29,6 +31,7 @@ public class MainMenu : Photon.MonoBehaviour
     string playerPrefabName = "NewPlayer";
 
     public GM  _GM;
+    public SkillList _SL;
 
     //動作
     Animation anim;
@@ -55,7 +58,7 @@ public class MainMenu : Photon.MonoBehaviour
     void OnJoinedLobby()
     {
         //PhotonNetwork.player.NickName = PlayerPrefs.GetString("PlayerName");
-        print(PhotonNetwork.player.NickName);
+        //print(PhotonNetwork.player.NickName);
         if (PhotonNetwork.player.NickName == "")
         {
             CreatePlayerPanel.SetActive(true);
@@ -194,7 +197,7 @@ public class MainMenu : Photon.MonoBehaviour
     {
         if (InTheRoomManager.ReadyPlayerCount == PhotonNetwork.room.PlayerCount)
         {
-            GetComponent<PhotonView>().RPC("STARTGAME", PhotonTargets.All);
+            GetComponent<PhotonView>().RPC("STARTGAME", PhotonTargets.AllBufferedViaServer);
 
         }
         else
@@ -237,10 +240,34 @@ public class MainMenu : Photon.MonoBehaviour
         GamePanel.SetActive(true);
 
         GameObject MyCharacter = PhotonNetwork.Instantiate(this.playerPrefabName, StartPos[InTheRoomManager.Team].position, Quaternion.identity, 0);
+        PlayerAbilityValue _PAV = MyCharacter.GetComponent<PlayerAbilityValue>();
+
+        _PAV.PLAYER_NAME = PhotonNetwork.player.NickName;
+        _PAV.TEAM = InTheRoomManager.Team;
+        _PAV.SKILL = InTheRoomManager.SkillNumber;
+        _PAV.ADVANCED_SKILL = InTheRoomManager.Skill_AdvanceNumber;
+        /*
+        if (_PAV.ADVANCED_SKILL == 0)
+            MyCharacter.transform.GetChild(3).GetChild(1).GetComponent<Image>().sprite = _SL.All_Skill_Sprite[1 + (4 * (_PAV.SKILL - 1))];
+        else
+            MyCharacter.transform.GetChild(3).GetChild(1).GetComponent<Image>().sprite = _SL.GetComponent<SkillList>().All_Skill_Sprite[1 + (4 * (_PAV.SKILL - 1)) + _PAV.ADVANCED_SKILL];
+
+        print(_PAV.SKILL + ":" + _PAV.ADVANCED_SKILL);
+        */
+        /*
         MyCharacter.GetComponent<PlayerAbilityValue>().PLAYER_NAME = PhotonNetwork.player.NickName;
         MyCharacter.GetComponent<PlayerAbilityValue>().TEAM = InTheRoomManager.Team;
         MyCharacter.GetComponent<PlayerAbilityValue>().SKILL = InTheRoomManager.SkillNumber;
         MyCharacter.GetComponent<PlayerAbilityValue>().ADVANCED_SKILL = InTheRoomManager.Skill_AdvanceNumber;
+        */
+        /*
+        if (MyCharacter.GetComponent<PlayerAbilityValue>().ADVANCED_SKILL == 0)
+            MyCharacter.transform.GetChild(3).GetChild(1).GetComponent<Image>().sprite = _SL.All_Skill_Sprite[1 + (4 * (MyCharacter.GetComponent<PlayerAbilityValue>().SKILL - 1))];
+        else
+            MyCharacter.transform.GetChild(3).GetChild(1).GetComponent<Image>().sprite = _SL.GetComponent<SkillList>().All_Skill_Sprite[1 + (4 * (MyCharacter.GetComponent<PlayerAbilityValue>().SKILL - 1)) + MyCharacter.GetComponent<PlayerAbilityValue>().ADVANCED_SKILL];
+        */
+
+
 
         JoystickUI.transform.GetChild(0).GetComponent<CnControls.SimpleJoystick>().Player = MyCharacter;
         JoystickUI.transform.GetChild(1).GetComponent<CnControls.SimpleJoystick>().Player = MyCharacter;

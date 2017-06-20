@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class PlayerAbilityValue : Photon.MonoBehaviour
 {
@@ -34,6 +35,9 @@ public class PlayerAbilityValue : Photon.MonoBehaviour
     [Tooltip("存活時間")]
     public float LIFETIME = 0;
 
+    public Image SKILLICON;
+
+
 
     void Start()
     {
@@ -58,7 +62,7 @@ public class PlayerAbilityValue : Photon.MonoBehaviour
                 //transform.GetChild(1).gameObject.SetActive(false);
                 //transform.GetChild(2).gameObject.SetActive(false);
                 //transform.GetChild(3).gameObject.SetActive(false);
-
+                GetComponent<PlayerNerf>().enabled = false;
                 GetComponent<PlayerController>()._anim.SetBool("Die", true);
                 GetComponent<PlayerController>().enabled = false;
                 GetComponent<PlayerSkill>().enabled = false;
@@ -135,7 +139,6 @@ public class PlayerAbilityValue : Photon.MonoBehaviour
                 GameObject.Find("Code").GetComponent<GM>().REDPLAYERCOUNT -= 1;
             if (TEAM == 1)
                 GameObject.Find("Code").GetComponent<GM>().BLUEPLAYERCOUNT -= 1;
-            print("123");
 
             SKILL = 1;
             ADVANCED_SKILL = 0;

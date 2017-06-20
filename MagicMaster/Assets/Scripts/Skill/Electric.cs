@@ -10,7 +10,7 @@ public class Electric : Photon.MonoBehaviour {
 
     public GameObject Target;
     public int Team;
-    int Damage=1;
+    public int Damage=1;
 
     public LineRenderer LR;
     private float counter;

@@ -50,6 +50,8 @@ public class GM : MonoBehaviour {
 	void Update () {
         if(GAMESTART)
         {
+            _mainmenu.NerfGroup.SetActive(true);
+
             GAMETIME += Time.deltaTime;
 
 
@@ -100,10 +102,12 @@ public class GM : MonoBehaviour {
 
 
 
-
+        _mainmenu.NerfGroup.SetActive(false);
         _mainmenu.GamePanel.SetActive(false);
         _mainmenu.JoystickUI.SetActive(false);
         _mainmenu.GameOverPanel.SetActive(true);
+
+
 
         T_Overtime.text = _gametime.text;
         T_Money.text = GetMoney.ToString();

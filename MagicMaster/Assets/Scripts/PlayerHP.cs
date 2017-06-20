@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 public class PlayerHP : MonoBehaviour
 {
+    public Sprite[] AllHPBar;
 
     public Image HPBar;
     public int MaxHP;
@@ -12,11 +13,15 @@ public class PlayerHP : MonoBehaviour
     void Start()
     {
         MaxHP = GetComponent<PlayerAbilityValue>().HEALTH;
+
+        HPBar.sprite = AllHPBar[GetComponent<PlayerAbilityValue>().TEAM];
+
     }
 
 
     void Update()
     {
+        HPBar.sprite = AllHPBar[GetComponent<PlayerAbilityValue>().TEAM];
         NowHP = GetComponent<PlayerAbilityValue>().HEALTH;
 
         if (NowHP > 0)

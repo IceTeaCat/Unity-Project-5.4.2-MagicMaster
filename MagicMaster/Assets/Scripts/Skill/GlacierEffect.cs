@@ -15,6 +15,7 @@ public class GlacierEffect : Photon.MonoBehaviour {
         //TargetPlayer_SkillData = GetComponent<PlayerSkill>();
         //TargetPlayer_SkillData.CanFire = false;
         photonView.RPC("SetCanFire", PhotonTargets.All, false);
+
     }
 
     void Update()

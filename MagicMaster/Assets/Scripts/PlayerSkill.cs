@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using CnControls;
+using UnityEngine.UI;
 
 public class PlayerSkill : Photon.MonoBehaviour
 {
@@ -17,10 +18,12 @@ public class PlayerSkill : Photon.MonoBehaviour
 
     public bool CanFire = true;
     public bool Fireing = false;
-    public float CDtime=0;
+    public float CDtime;
+    public float TempCDtime;
 
     public GameObject playerSkill;
     public GameObject Skill_Img_Arrow;
+    public GameObject Skill_Img_Sector;
     public GameObject Skill_Img_RangeCircle;
     public GameObject Skill_Img_DamageCircle;
 
@@ -31,27 +34,36 @@ public class PlayerSkill : Photon.MonoBehaviour
 
     float FireDelay = 0.05f;
 
+
+    GameObject _code;
+
     void Start()
     {
+        _code = GameObject.Find("Code");
+
         _pav = GetComponent<PlayerAbilityValue>();
         _anim = transform.GetChild(1).GetChild(0).GetComponent<Animator>();
-        
+
+
+
+
+        /*
+        if (photonView.isMine)
+        {
+            //Icon
+            photonView.RPC("Init_Icon", PhotonTargets.All, gameObject.GetComponent<PhotonView>().viewID);
+        }
+        */
         if (_pav.SKILL == 2 && _pav.ADVANCED_SKILL == 3)
         {
             GameObject GR = PhotonNetwork.Instantiate("GlacierRange", transform.position, Quaternion.identity, 0);
             photonView.RPC("SetGRParent", PhotonTargets.AllBuffered, new object[] { GR.GetComponent<PhotonView>().viewID, GetComponent<PhotonView>().viewID });
-
-            //GR.transform.parent = gameObject.transform;
         }
 
         if (_pav.SKILL == 3 && _pav.ADVANCED_SKILL == 3)
         {
             GameObject EIR = PhotonNetwork.Instantiate("ElectricIncreaseRange", transform.position, Quaternion.identity, 0);
             photonView.RPC("SetEIRParent", PhotonTargets.AllBuffered, new object[] { EIR.GetComponent<PhotonView>().viewID, GetComponent<PhotonView>().viewID });
-
-            //EIR.transform.parent = gameObject.transform;
-            //EIR.GetComponent<ElectricIncreaseRange>().Team = _pav.TEAM;
-
         }
 
 
@@ -60,17 +72,34 @@ public class PlayerSkill : Photon.MonoBehaviour
 
     void Update()
     {
+        if (_pav.ADVANCED_SKILL == 0)
+            transform.GetChild(3).GetChild(1).GetComponent<Image>().sprite = _code.GetComponent<SkillList>().All_Skill_Sprite[1 + (4 * (_pav.SKILL - 1))];
+        else
+            transform.GetChild(3).GetChild(1).GetComponent<Image>().sprite = _code.GetComponent<SkillList>().All_Skill_Sprite[1 + (4 * (_pav.SKILL - 1)) + _pav.ADVANCED_SKILL];
+
+        //print(_pav.SKILL + ":" + _pav.ADVANCED_SKILL);
+
+
+        if (TempCDtime > 0)
+            TempCDtime -= Time.deltaTime;
+
         if (photonView.isMine && CanFire)
         {
-            SkillJoystick();
             Skill_Function(_pav.SKILL, _pav.ADVANCED_SKILL);
+            if (TempCDtime <= 0)
+            {
+                SkillJoystick();
+            }
         }
 
-            if (_anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
-                Fireing = true;
-            else
-                Fireing = false;
-        
+        if (_anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
+        {
+            Fireing = true;
+        }
+        else
+        {
+            Fireing = false;
+        }
 
         if (Fireing)
             FireDelay -= Time.deltaTime;
@@ -118,7 +147,7 @@ public class PlayerSkill : Photon.MonoBehaviour
                     if (R_inputVector.sqrMagnitude > 0.001f)
                     {
                         R_movementVector = Camera.main.transform.TransformDirection(R_inputVector);
-                        R_movementVector.y = 0f;                     
+                        R_movementVector.y = 0f;
                         Skill_Img_DamageCircle.transform.localPosition = new Vector3(R_movementVector.x * 9, 0, R_movementVector.z * 9 * 10 / 8);
                         //R_movementVector.Normalize();
                         //playerSkill.transform.forward = R_movementVector;
@@ -140,7 +169,7 @@ public class PlayerSkill : Photon.MonoBehaviour
             case 1:
                 {
                     //玩家正在按右按鈕
-                    if (SkillStandBy)
+                    if (SkillStandBy && TempCDtime <= 0)
                     {
                         Skill_Img_Arrow.transform.gameObject.SetActive(true);
                     }
@@ -160,7 +189,7 @@ public class PlayerSkill : Photon.MonoBehaviour
                             playerSkill.transform.rotation = Quaternion.identity;
                             SkillFire = false;
                             SkillStandBy = false;
-              
+
 
                             //附加進階技能
                             switch (a)
@@ -207,9 +236,9 @@ public class PlayerSkill : Photon.MonoBehaviour
             case 2:
                 {
                     //玩家正在按右按鈕
-                    if (SkillStandBy)
+                    if (SkillStandBy && TempCDtime <= 0)
                     {
-                        Skill_Img_Arrow.transform.gameObject.SetActive(true);
+                        Skill_Img_Sector.transform.gameObject.SetActive(true);
                     }
 
                     //玩家放開右按鈕
@@ -225,7 +254,7 @@ public class PlayerSkill : Photon.MonoBehaviour
                                 GameObject ice = PhotonNetwork.Instantiate("Ice", skillPos.position, Quaternion.identity, 0) as GameObject;
                                 GetComponent<PhotonView>().RPC("Init_Ice", PhotonTargets.All, ice.GetComponent<PhotonView>().viewID);
                                 ice.transform.forward = -playerSkill.transform.forward;
-                                ice.transform.Rotate(0, (i - 1) * 15, 0);
+                                ice.transform.Rotate(0, (i - 1) * 15 * 2, 0);
 
                                 //附加進階技能
                                 switch (a)
@@ -262,9 +291,9 @@ public class PlayerSkill : Photon.MonoBehaviour
                             playerSkill.transform.rotation = Quaternion.identity;
                             SkillFire = false;
                             SkillStandBy = false;
-                            
+
                         }
-                        Skill_Img_Arrow.transform.gameObject.SetActive(false);
+                        Skill_Img_Sector.transform.gameObject.SetActive(false);
                     }
 
                 }
@@ -273,7 +302,7 @@ public class PlayerSkill : Photon.MonoBehaviour
             case 3:
                 {
                     //玩家正在按右按鈕
-                    if (SkillStandBy)
+                    if (SkillStandBy && TempCDtime <= 0)
                     {
                         Skill_Img_RangeCircle.transform.gameObject.SetActive(true);
                         Skill_Img_DamageCircle.transform.gameObject.SetActive(true);
@@ -333,7 +362,7 @@ public class PlayerSkill : Photon.MonoBehaviour
                             SkillFire = false;
                             SkillStandBy = false;
                         }
-  
+
                         Skill_Img_DamageCircle.SetActive(false);
                         Skill_Img_RangeCircle.transform.gameObject.SetActive(false);
                     }
@@ -372,14 +401,14 @@ public class PlayerSkill : Photon.MonoBehaviour
     void AddCombustion(int fireball_ID)
     {
         PhotonView.Find(fireball_ID).gameObject.AddComponent<Combustion>();
-        PhotonView.Find(fireball_ID).gameObject.GetComponent<Combustion>().Host=gameObject;
+        PhotonView.Find(fireball_ID).gameObject.GetComponent<Combustion>().Host = gameObject;
         PhotonView.Find(fireball_ID).gameObject.GetComponent<Combustion>().Team = _pav.TEAM;
     }
 
     [PunRPC]
     void AddFusion(int fireball_ID)
     {
-        PhotonView.Find(fireball_ID).gameObject.AddComponent<Fusion>();  
+        PhotonView.Find(fireball_ID).gameObject.AddComponent<Fusion>();
     }
 
     [PunRPC]
@@ -400,7 +429,7 @@ public class PlayerSkill : Photon.MonoBehaviour
     {
         PhotonView.Find(ice_ID).gameObject.AddComponent<Chill>();
     }
-    
+
     [PunRPC]
     void AddGlacier(int ice_ID)
     {
@@ -457,6 +486,32 @@ public class PlayerSkill : Photon.MonoBehaviour
     {
         PhotonView.Find(Ice_ID).GetComponent<Ice>().Host = gameObject;
         PhotonView.Find(Ice_ID).GetComponent<Ice>().Team = _pav.TEAM;
+    }
+
+
+
+
+    //---初始化技能圖示---
+    [PunRPC]
+    void Init_Icon(int Player_ID)
+    {
+        //GameObject temp = PhotonView.Find(Player_ID).gameObject;
+        GameObject temp = gameObject;
+        GameObject _code= GameObject.Find("Code");
+        /*
+        if (InTheRoomManager.Skill_AdvanceNumber == 0)
+            temp.transform.GetChild(3).GetChild(1).GetComponent<Image>().sprite = _code.GetComponent<SkillList>().All_Skill_Sprite[1 + (4 * (InTheRoomManager.SkillNumber - 1))];
+        else
+            temp.transform.GetChild(3).GetChild(1).GetComponent<Image>().sprite = _code.GetComponent<SkillList>().All_Skill_Sprite[1 + (4 * (InTheRoomManager.SkillNumber - 1)) + InTheRoomManager.Skill_AdvanceNumber];
+        */
+        
+        if (temp.GetComponent<PlayerAbilityValue>().ADVANCED_SKILL == 0)
+            temp.transform.GetChild(3).GetChild(1).GetComponent<Image>().sprite = _code.GetComponent<SkillList>().All_Skill_Sprite[1 + (4 * (temp.GetComponent<PlayerAbilityValue>().SKILL - 1))];
+        else
+            temp.transform.GetChild(3).GetChild(1).GetComponent<Image>().sprite = _code.GetComponent<SkillList>().All_Skill_Sprite[1 + (4 * (temp.GetComponent<PlayerAbilityValue>().SKILL - 1)) + temp.GetComponent<PlayerAbilityValue>().ADVANCED_SKILL];
+        
+        //print(InTheRoomManager.SkillNumber + ":" + InTheRoomManager.Skill_AdvanceNumber);
+        print((temp.GetComponent<PlayerAbilityValue>().SKILL)+":"+ ( temp.GetComponent<PlayerAbilityValue>().ADVANCED_SKILL));
     }
 
 
