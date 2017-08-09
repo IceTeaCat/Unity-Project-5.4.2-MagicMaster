@@ -36,7 +36,7 @@ public class ElectricChainLockRange : Photon.MonoBehaviour
             JumpTime -= Time.deltaTime;
 
                 //時間到就電過去
-                if (JumpTime <= 0)
+                if (JumpTime <= 0 )
                 {
                     RemoveOldTarget();
                     CaleDistance();
@@ -44,44 +44,17 @@ public class ElectricChainLockRange : Photon.MonoBehaviour
                     {
                         if (!IsDestroy)
                         {
-                            if (JumpCount > 0)
+                            if (JumpCount > 0 )
                             {
                                 if (TargetEnemy != null)
                                 {
-                                    //print(OldEnemy.name +":" + TargetEnemy.name);
                                     GameObject ElectricLR = PhotonNetwork.Instantiate("ElectricLR", TargetEnemy.transform.position, Quaternion.identity, 0) as GameObject;
                                     GetComponent<PhotonView>().RPC("CreateECLRElectricLR", PhotonTargets.All, ElectricLR.GetComponent<PhotonView>().viewID);
 
-
-
-                                    /*
-                                    ElectricLR.GetComponent<Electric>().LR = ElectricLR.GetComponent<LineRenderer>();
-
-                                    ElectricLR.GetComponent<Electric>().origin = OldEnemy;
-                                    ElectricLR.GetComponent<Electric>().destination = TargetEnemy;
-                                    */
-
                                     if (Player.GetComponent<ElectricIncrease>())
                                     {
-                                        ElectricLR.GetComponent<PhotonView>().RPC("SetIsPowerUp", PhotonTargets.All, true);
-                                        //ElectricLR.GetComponent<Electric>().isPowerUp = true;                      
+                                        ElectricLR.GetComponent<PhotonView>().RPC("SetIsPowerUp", PhotonTargets.All, true);                    
                                     }
-
-                                    /*
-                                    ElectricLR.GetComponent<Electric>().Target = TargetEnemy;
-
-                                    GetComponent<SphereCollider>().enabled = false;
-
-                                    JumpCount--;
-                                    JumpTime = 0.1f;
-                                    //清空資料
-                                    Enemys.Clear();
-                                    D.Clear();
-                                    //移動位置
-                                    gameObject.transform.position = TargetEnemy.transform.position;
-                                    GetComponent<SphereCollider>().enabled = true;
-                                    OldEnemy = TargetEnemy;
-                                    */
                                 }
                                 else
                                 {
@@ -121,7 +94,8 @@ public class ElectricChainLockRange : Photon.MonoBehaviour
             //打到敵方
             if (TargetPlayer_Data.TEAM != Team)
             {
-                Enemys.Add(TargetPlayer_Data.gameObject);
+                GameObject temp = TargetPlayer_Data.gameObject;
+                Enemys.Add(temp);
                 D.Add(Vector3.Distance(TargetPlayer_Data.gameObject.transform.position, transform.position));
             }
             /*

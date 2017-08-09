@@ -9,26 +9,29 @@ public class Fusion : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (GetComponent<PhotonView>().isMine)
+        print(other.tag);
+
+        if (other.tag == "Fireball")
         {
-            if (other.tag == "Fireball")
+            print("YA");
+
+            FireBall OtherFireball_Data = other.gameObject.GetComponent<FireBall>();
+
+            if (!OtherFireball_Data.GetComponent<Spatter>())
             {
-                print("YA");
-
-                FireBall OtherFireball_Data = other.gameObject.GetComponent<FireBall>();
-
-
-                if (OtherFireball_Data.Team == gameObject.GetComponent<FireBall>().Team)
+                if (GetComponent<PhotonView>().isMine)
                 {
-                    GetComponent<PhotonView>().RPC("Damage", PhotonTargets.All, new object[] { other.gameObject.GetComponent<PhotonView>().viewID, this.gameObject.GetComponent<PhotonView>().viewID });
-                    CreateFireBall();
-                    //GameObject FB = PhotonNetwork.Instantiate("FireBall_mid", transform.position, transform.rotation, 0);
+                    if (OtherFireball_Data.Team == gameObject.GetComponent<FireBall>().Team)
+                    {
+                        GetComponent<PhotonView>().RPC("Damage", PhotonTargets.All, new object[] { other.gameObject.GetComponent<PhotonView>().viewID, this.gameObject.GetComponent<PhotonView>().viewID });
+                        CreateFireBall();
+                        //GameObject FB = PhotonNetwork.Instantiate("FireBall_mid", transform.position, transform.rotation, 0);
 
-                    GetComponent<PhotonView>().RPC("DestoryFireball", PhotonTargets.All, other.gameObject.GetComponent<PhotonView>().viewID);
-                    PhotonNetwork.Destroy(gameObject);
+                        GetComponent<PhotonView>().RPC("DestoryFireball", PhotonTargets.All, other.gameObject.GetComponent<PhotonView>().viewID);
+                        PhotonNetwork.Destroy(gameObject);
+                    }
                 }
             }
-
         }
 
 

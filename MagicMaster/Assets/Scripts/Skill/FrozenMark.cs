@@ -5,7 +5,7 @@ using System.Collections;
 public class FrozenMark : Photon.MonoBehaviour {
 
     public GameObject FME;
-    public float LiftTime = 10;
+    public float LiftTime = 5;
 
     void Update()
     {

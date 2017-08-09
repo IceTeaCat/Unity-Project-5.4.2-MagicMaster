@@ -27,7 +27,7 @@ public class GlacierEffect : Photon.MonoBehaviour {
             photonView.RPC("SetCanFire", PhotonTargets.All, true);
         }
 
-        if (EndTime <= -10)
+        if (EndTime <= -2)
         {
             //Destroy(gameObject.GetComponent<GlacierEffect>());
             photonView.RPC("RemoveGlacierEffect", PhotonTargets.All, gameObject.GetComponent<PhotonView>().viewID);

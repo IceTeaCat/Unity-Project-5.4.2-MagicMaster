@@ -119,6 +119,7 @@ public class PlayerSkill : Photon.MonoBehaviour
             //火球發動技能圖示控制
             case 1:
                 {
+                    CDtime = 3;
                     if (R_inputVector.sqrMagnitude > 0.001f)
                     {
                         R_movementVector = Camera.main.transform.TransformDirection(R_inputVector);
@@ -131,6 +132,7 @@ public class PlayerSkill : Photon.MonoBehaviour
             //冰凍發動技能圖示
             case 2:
                 {
+                    CDtime = 2;
                     if (R_inputVector.sqrMagnitude > 0.001f)
                     {
                         R_movementVector = Camera.main.transform.TransformDirection(R_inputVector);
@@ -143,7 +145,7 @@ public class PlayerSkill : Photon.MonoBehaviour
             //閃電發動技能圖示控制
             case 3:
                 {
-
+                    CDtime = 1;
                     if (R_inputVector.sqrMagnitude > 0.001f)
                     {
                         R_movementVector = Camera.main.transform.TransformDirection(R_inputVector);

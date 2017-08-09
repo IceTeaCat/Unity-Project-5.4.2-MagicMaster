@@ -8,7 +8,7 @@ public class FrozenDamage : Photon.MonoBehaviour
     public float TargetOriginalSpeed = 0;
     PlayerAbilityValue TargetPlayer_Data;
 
-    public float EndTime = 5;
+    public float EndTime = 2;
 
     void Start()
     {

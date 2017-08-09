@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class ElectricLockRange : Photon.MonoBehaviour
 {
-    float DamageTime = 0.01f;
+    float DamageTime = 0.05f;
 
     public GameObject Player;
 
@@ -93,7 +93,10 @@ public class ElectricLockRange : Photon.MonoBehaviour
                 Enemys.Add(TargetPlayer_Data.gameObject);
                 //D.Add(Vector3.Distance(TargetPlayer_Data.gameObject.transform.position, PlayerOrEnemy.transform.position));
                 D.Add(Vector3.Distance(TargetPlayer_Data.gameObject.transform.position, Player.transform.position));
+                print("YA");
             }
+
+            print("YA2");
         }
     }
 

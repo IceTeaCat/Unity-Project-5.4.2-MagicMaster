@@ -15,12 +15,8 @@ public class Spatter : MonoBehaviour
                 PhotonNetwork.Destroy(gameObject);
 
                 GameObject SE = PhotonNetwork.Instantiate("SpatterEffect", transform.position, Quaternion.identity, 0);
+                //GetComponent<PhotonView>().RPC("SetSETeam", PhotonTargets.All, SE.GetComponent<PhotonView>().viewID);
 
-
-                GetComponent<PhotonView>().RPC("SetSETeam", PhotonTargets.All, SE.GetComponent<PhotonView>().viewID);
-                //SE.GetComponent<SpatterDamage>().Team = GetComponent<FireBall>().Team;
-
-                print(SE.GetComponent<SpatterDamage>().Team + ":" + GetComponent<FireBall>().Team);
             }
         }
     }

@@ -37,7 +37,7 @@ public class SkillTestCode2 : MonoBehaviour {
         objs[0] = enabledRenderers;
 
         // Spawn our local player
-        GameObject MyCharacter = PhotonNetwork.Instantiate(this.playerPrefabName, transform.position, Quaternion.identity, 0, objs);
+        GameObject MyCharacter = PhotonNetwork.Instantiate(this.playerPrefabName,new Vector3(Random.Range(-5,5),0, Random.Range(-5, 5)), Quaternion.identity, 0, objs);
         SkillJoystick.SetActive(true);
         SkillJoystick.transform.GetChild(0).GetComponent<CnControls.SimpleJoystick>().Player = MyCharacter;
         SkillJoystick.transform.GetChild(1).GetComponent<CnControls.SimpleJoystick>().Player = MyCharacter;

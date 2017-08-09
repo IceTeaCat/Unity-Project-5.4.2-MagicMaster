@@ -53,6 +53,11 @@ public class PlayerAbilityValue : Photon.MonoBehaviour
 
     void Update()
     {
+        //超出邊界
+        if (transform.GetChild(1).gameObject.transform.position.x < -40 || transform.GetChild(1).gameObject.transform.position.x > 40 || transform.GetChild(1).gameObject.transform.position.y < -10 || transform.GetChild(1).gameObject.transform.position.y > 10 || transform.GetChild(1).gameObject.transform.position.z < -40 || transform.GetChild(1).gameObject.transform.position.z > 40)
+            HEALTH = 0;
+        
+
         if (!IsDestroy)
             if (HEALTH <= 0)
             {
@@ -62,15 +67,20 @@ public class PlayerAbilityValue : Photon.MonoBehaviour
                 //transform.GetChild(1).gameObject.SetActive(false);
                 //transform.GetChild(2).gameObject.SetActive(false);
                 //transform.GetChild(3).gameObject.SetActive(false);
+
+                transform.GetChild(1).gameObject.GetComponent<CapsuleCollider>().enabled = false;
+                transform.GetChild(1).gameObject.GetComponent<CharacterController>().enabled = false;
+                transform.GetChild(1).gameObject.GetComponent<Rigidbody>().useGravity = false;
                 GetComponent<PlayerNerf>().enabled = false;
                 GetComponent<PlayerController>()._anim.SetBool("Die", true);
                 GetComponent<PlayerController>().enabled = false;
                 GetComponent<PlayerSkill>().enabled = false;
 
+
                 //PhotonNetwork.Destroy(gameObject);
-                
+
                 if (photonView.isMine)
-                    photonView.RPC("SetDie", PhotonTargets.All);
+                    photonView.RPC("SetDie", PhotonTargets.AllBuffered);
                 
             }
     }
@@ -96,23 +106,6 @@ public class PlayerAbilityValue : Photon.MonoBehaviour
         }
     }
 
-    /*
-    //隊伍資訊
-    [PunRPC]
-    void SetTeam(int team)
-    {
-        TEAM = team;
-    }
-
-    //技能資訊
-    [PunRPC]
-    void SetSkill(int skill,int adv_skill)
-    {
-        SKILL = skill;
-        ADVANCED_SKILL = adv_skill;
-    }
-    */
-
     //接受傷害
     [PunRPC]
     void SetDamage(int Power)
@@ -135,11 +128,6 @@ public class PlayerAbilityValue : Photon.MonoBehaviour
     {
         if (HEALTH <= 0)
         {
-            if (TEAM == 0)
-                GameObject.Find("Code").GetComponent<GM>().REDPLAYERCOUNT -= 1;
-            if (TEAM == 1)
-                GameObject.Find("Code").GetComponent<GM>().BLUEPLAYERCOUNT -= 1;
-
             SKILL = 1;
             ADVANCED_SKILL = 0;
         }

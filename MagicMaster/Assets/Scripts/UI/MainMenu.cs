@@ -8,6 +8,7 @@ public class MainMenu : Photon.MonoBehaviour
     public Transform[] StartPos;
 
     //UI
+    public GameObject OpenUI;
     public GameObject CreatePlayerPanel;
     public GameObject GameLobbyPanel;
     public GameObject CreateRoomPanel;
@@ -61,11 +62,16 @@ public class MainMenu : Photon.MonoBehaviour
         //print(PhotonNetwork.player.NickName);
         if (PhotonNetwork.player.NickName == "")
         {
+            OpenUI.SetActive(true);
+            //OpenUI.GetComponent<Animator>().SetTrigger("ChangeIn");
+            /*
             CreatePlayerPanel.SetActive(true);
             CreatePlayerPanel.GetComponent<Animator>().SetTrigger("ChangeIn");
+            */
         }
         else
         {
+            CreatePlayerPanel.SetActive(false);
             GameLobbyPanel.GetComponent<Animator>().SetTrigger("ChangeIn");
             GameLobbyPanel.SetActive(true);
             LobbyPlayerName.text = PhotonNetwork.playerName;
@@ -92,6 +98,19 @@ public class MainMenu : Photon.MonoBehaviour
         print("玩家已加入房間:" + PhotonNetwork.room.name);
     }
 
+
+    public void OpenUIToCreatePlayer()
+    {
+        if (PhotonNetwork.insideLobby )
+        {
+            
+            OpenUI.SetActive(false);
+            if (PhotonNetwork.player.NickName == "") {
+                CreatePlayerPanel.SetActive(true);
+                CreatePlayerPanel.GetComponent<Animator>().SetTrigger("ChangeIn");
+            }
+        }
+    }
 
 
 
@@ -230,6 +249,7 @@ public class MainMenu : Photon.MonoBehaviour
     [PunRPC]
     void STARTGAME()
     {
+        _GM.enabled = true;
         _GM.GAMESTART = true;
         _GM.BLUEPLAYERCOUNT = GameObject.Find("Blue_PlayerSlot").transform.childCount;
         _GM.REDPLAYERCOUNT = GameObject.Find("Red_PlayerSlot").transform.childCount;
@@ -239,35 +259,14 @@ public class MainMenu : Photon.MonoBehaviour
         JoystickUI.SetActive(true);
         GamePanel.SetActive(true);
 
-        GameObject MyCharacter = PhotonNetwork.Instantiate(this.playerPrefabName, StartPos[InTheRoomManager.Team].position, Quaternion.identity, 0);
+        //GameObject MyCharacter = PhotonNetwork.Instantiate(this.playerPrefabName, StartPos[InTheRoomManager.Team].position, Quaternion.identity, 0);
+        GameObject MyCharacter = PhotonNetwork.Instantiate(this.playerPrefabName,new Vector3(StartPos[InTheRoomManager.Team].position.x+Random.Range(-2,2), 0, StartPos[InTheRoomManager.Team].position.z + Random.Range(-2, 2)) , Quaternion.identity, 0);
         PlayerAbilityValue _PAV = MyCharacter.GetComponent<PlayerAbilityValue>();
 
         _PAV.PLAYER_NAME = PhotonNetwork.player.NickName;
         _PAV.TEAM = InTheRoomManager.Team;
         _PAV.SKILL = InTheRoomManager.SkillNumber;
         _PAV.ADVANCED_SKILL = InTheRoomManager.Skill_AdvanceNumber;
-        /*
-        if (_PAV.ADVANCED_SKILL == 0)
-            MyCharacter.transform.GetChild(3).GetChild(1).GetComponent<Image>().sprite = _SL.All_Skill_Sprite[1 + (4 * (_PAV.SKILL - 1))];
-        else
-            MyCharacter.transform.GetChild(3).GetChild(1).GetComponent<Image>().sprite = _SL.GetComponent<SkillList>().All_Skill_Sprite[1 + (4 * (_PAV.SKILL - 1)) + _PAV.ADVANCED_SKILL];
-
-        print(_PAV.SKILL + ":" + _PAV.ADVANCED_SKILL);
-        */
-        /*
-        MyCharacter.GetComponent<PlayerAbilityValue>().PLAYER_NAME = PhotonNetwork.player.NickName;
-        MyCharacter.GetComponent<PlayerAbilityValue>().TEAM = InTheRoomManager.Team;
-        MyCharacter.GetComponent<PlayerAbilityValue>().SKILL = InTheRoomManager.SkillNumber;
-        MyCharacter.GetComponent<PlayerAbilityValue>().ADVANCED_SKILL = InTheRoomManager.Skill_AdvanceNumber;
-        */
-        /*
-        if (MyCharacter.GetComponent<PlayerAbilityValue>().ADVANCED_SKILL == 0)
-            MyCharacter.transform.GetChild(3).GetChild(1).GetComponent<Image>().sprite = _SL.All_Skill_Sprite[1 + (4 * (MyCharacter.GetComponent<PlayerAbilityValue>().SKILL - 1))];
-        else
-            MyCharacter.transform.GetChild(3).GetChild(1).GetComponent<Image>().sprite = _SL.GetComponent<SkillList>().All_Skill_Sprite[1 + (4 * (MyCharacter.GetComponent<PlayerAbilityValue>().SKILL - 1)) + MyCharacter.GetComponent<PlayerAbilityValue>().ADVANCED_SKILL];
-        */
-
-
 
         JoystickUI.transform.GetChild(0).GetComponent<CnControls.SimpleJoystick>().Player = MyCharacter;
         JoystickUI.transform.GetChild(1).GetComponent<CnControls.SimpleJoystick>().Player = MyCharacter;

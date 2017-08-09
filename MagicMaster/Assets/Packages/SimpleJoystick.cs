@@ -101,6 +101,7 @@ namespace CnControls
         protected VirtualAxis VerticalAxis;
 
         Animator _anim;
+        SoundEffectManager _AS;
 
         bool isCanUse=true;
 
@@ -128,26 +129,43 @@ namespace CnControls
         private void Start()
         {
             _anim = Player.transform.GetChild(1).GetChild(0).GetComponent<Animator>();
-
+            _AS = GameObject.Find("SoundEffect").GetComponent<SoundEffectManager>();
         }
 
         private void Update()
         {
+            if (HorizontalAxisName == "Horizontal1")
+            {
+                if (Player != null)
+                {
+                    if (!Player.GetComponent<PlayerController>().enabled)
+                    {
+                        HorizintalAxis.Value = 0;
+                        VerticalAxis.Value = 0;
+                        CnInputManager.UnregisterVirtualAxis(HorizintalAxis);
+                        CnInputManager.UnregisterVirtualAxis(VerticalAxis);
+                        return;
+                    }
+                }
+            }
+
             if (HorizontalAxisName == "Horizontal2")
             {
-                if (Player.GetComponent<PlayerSkill>().TempCDtime > 0)
-                    Hide(true);
-                else
-                    Hide(false);
-
-                if (Player.GetComponent<GlacierEffect>())
+                if (Player != null)
                 {
-                    if (Player.GetComponent<GlacierEffect>().EndTime > 0)
+                    if (Player.GetComponent<PlayerSkill>().TempCDtime > 0)
                         Hide(true);
-                    else if (Player.GetComponent<GlacierEffect>().EndTime <= 0)
+                    else
                         Hide(false);
-                }
 
+                    if (Player.GetComponent<GlacierEffect>())
+                    {
+                        if (Player.GetComponent<GlacierEffect>().EndTime > 0)
+                            Hide(true);
+                        else if (Player.GetComponent<GlacierEffect>().EndTime <= 0)
+                            Hide(false);
+                    }
+                }
 
             }
         }
@@ -155,9 +173,10 @@ namespace CnControls
         private void OnEnable()
         {
             // When we enable, we get our virtual axis
-
+            
             HorizintalAxis = HorizintalAxis ?? new VirtualAxis(HorizontalAxisName);
             VerticalAxis = VerticalAxis ?? new VirtualAxis(VerticalAxisName);
+
 
             // And register them in our input system
             CnInputManager.RegisterVirtualAxis(HorizintalAxis);
@@ -175,9 +194,14 @@ namespace CnControls
 
         public virtual void OnDrag(PointerEventData eventData)
         {
+            
+
+            
+
+
             if (!isCanUse)
             {
-                
+
             }
             else
             {
@@ -187,6 +211,9 @@ namespace CnControls
 
                     Player.GetComponent<PlayerSkill>().SkillStandBy = true;
                 }
+
+             
+
 
 
                 // Unity remote multitouch related thing
@@ -288,8 +315,11 @@ namespace CnControls
                             Player.GetComponent<PlayerSkill>().SkillFire = true;
 
                             if (Player.GetComponent<PlayerSkill>().CanFire)
+                            {
                                 _anim.SetTrigger("Fire");
-
+                                if (Player.GetComponent<PlayerAbilityValue>().SKILL != 3)
+                                    _AS.PlayerSkill(Player.GetComponent<PlayerAbilityValue>().SKILL - 1);
+                            }
                             Player.GetComponent<PlayerSkill>().TempCDtime = Player.GetComponent<PlayerSkill>().CDtime;
 
                         }
@@ -300,7 +330,8 @@ namespace CnControls
 
                 if (Stick.tag == "L_Stick")
                 {
-                    Player.GetComponent<PlayerController>().isDown = false;
+                    if (Player.GetComponent<PlayerController>().enabled)
+                        Player.GetComponent<PlayerController>().isDown = false;
                 }
             }
         }
@@ -352,7 +383,8 @@ namespace CnControls
                 if (Stick.tag == "L_Stick")
                 {
                     //print ("放開");
-                    Player.GetComponent<PlayerController>().isDown = true;
+                    if (Player.GetComponent<PlayerController>().enabled)
+                        Player.GetComponent<PlayerController>().isDown = true;
                 }
             }
         }
